@@ -251,61 +251,68 @@ if ($_POST['action'] == "category_edit") {
   echo json_encode($row);
 }
 
-if ($_POST['action'] == "update_menu") {
+if ($_POST['action'] == "product_update") {
 
 
-  if (empty($_POST['type'])) {
-    $err['type'] = "field is required";
+  if (empty($_POST['edit_type'])) {
+    $err['edit_type'] = "field is required";
   } else {
-    $category_id = $_POST['type'];
+    $category_id = $_POST['edit_type'];
   }
 
   $id = $_POST['id'];
 
-
-  if (empty($_POST['food_title'])) {
-    $err['food_title'] = "*Field is required";
+  
+  if (empty($_POST['product_edit_title'])) {
+    $err['product_edit_title'] = "*Field is required";
   } else {
-    $food_title = $_POST['food_title'];
+    $product_edit_title = $_POST['product_edit_title'];
   }
 
-  if (empty($_POST['category_description'])) {
-    $err['category_description'] = "*Field is required";
+  if (empty($_POST['product_edit_description'])) {
+    $err['product_edit_description'] = "*Field is required";
   } else {
-    $category_description = $_POST['category_description'];
-  }
-
-
-  if (empty($_POST['category_price'])) {
-    $err['price'] = "*Field is required";
-  } else {
-    $price = $_POST['category_price'];
+    $product_edit_description = $_POST['product_edit_description'];
   }
 
 
-  if (empty($_FILES['category_image']['name'])) {
+  if (empty($_POST['product_edit_price'])) {
+    $err['product_edit_price'] = "*Field is required";
+  } else {
+    $price = $_POST['product_edit_price'];
+  }
 
-    $newFileName = $_POST['old_category_image'];
+
+    if (empty($_POST['edit_additional_description'])) {
+    $err['edit_additional_description'] = "*Field is required";
+  } else {
+    $edit_additional_description = $_POST['edit_additional_description'];
+  }
+
+
+  if (empty($_FILES['product_edit_image']['name'])) {
+
+    $newFileName = $_POST['old_product_image'];
   } else {
 
 
 
 
-    $fileTmpPath = $_FILES['category_image']['tmp_name'];
-    $originalName = $_FILES['category_image']['name'];
+    $fileTmpPath = $_FILES['product_edit_image']['tmp_name'];
+    $originalName = $_FILES['product_edit_image']['name'];
     $fileExt = pathinfo($originalName, PATHINFO_EXTENSION);
 
 
     $randomName = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
 
     $newFileName = $randomName . '.' . $fileExt;
-    $uploadDir = '../Admin/assets/img/menu/';
+    $uploadDir = '../Admin/assets/img/product/';
     $destPath = $uploadDir . $newFileName;
     if (!is_dir($uploadDir)) {
       mkdir($uploadDir, 0755, true);
     }
     move_uploaded_file($fileTmpPath, $destPath);
-    $oldimage = $uploadDir . $_POST['old_category_image'];
+    $oldimage = $uploadDir . $_POST['old_product_image'];
     if (file_exists($oldimage)) {
       unlink($oldimage);
     }
@@ -319,7 +326,7 @@ if ($_POST['action'] == "update_menu") {
     echo json_encode($allerrs);
     return false;
   } else {
-    $update = "UPDATE menu SET title='$food_title',description='$category_description',price='$price',image='$newFileName',category_id='$category_id'  WHERE id='$id'";
+    $update = "UPDATE product SET name='$product_edit_title',description='$product_edit_description',image='$newFileName',price='$price',Additional_description='$edit_additional_description',cat_id='$category_id'  WHERE product_id ='$id'";
     $result = mysqli_query($con_query, $update);
     if ($result) {
 

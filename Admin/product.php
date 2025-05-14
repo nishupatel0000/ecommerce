@@ -50,7 +50,7 @@ require_once 'includes/aside.php';
           </button>
           <div class="modal fade" id="add_product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-              <form id="product_add" method="post">
+              <form id="product_add" method="POST" enctype="multipart/form-data">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Add  Product</h5>
@@ -115,7 +115,7 @@ require_once 'includes/aside.php';
       <div class="card-body">
         <div class="modal fade" id="edit_product" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
           <div class="modal-dialog">
-            <form method="POST" id="edit_category_form">
+            <form method="POST" id="edit_category_form" enctype="multipart/form-data">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="editModalLabel">Edit Category</h5>
@@ -136,7 +136,7 @@ require_once 'includes/aside.php';
                       }
                       ?>
                     </select>
-                    <div id="type_error" class="error"></div>
+                    <div id="edit_type_error" class="error"></div>
 
                     <label for="Product_title" class="form-label">Title</label>
 
@@ -185,13 +185,10 @@ require_once 'includes/aside.php';
           <thead>
             <tr>
               <th scope="col">Id</th>
-              <th scope="col">Name</th>
-              <th scope="col">Product_description</th>
+              <th scope="col">Name</th> 
               <th scope="col"> Product Price</th>
-              <th scope="col">Type</th>
-              <th scope="col">Additional_description</th>
-              <th scope="col">Image</th>
-
+              <th scope="col">Type</th> 
+              <th scope="col">Image</th> 
               <th scope="col">Operation</th>
 
               <!-- <th scope="col">Operation</th> -->
@@ -206,17 +203,16 @@ require_once 'includes/aside.php';
             while ($row = mysqli_fetch_assoc($result)) {
             ?>
               <tr>
-                <td><?php echo $row['cat_id']; ?></td>
-                <td><?php echo $row['name']; ?></td>
-                <td><?php echo $row['description']; ?></td>
+                <td><?php echo $row['product_id']; ?></td>
+                <td><?php echo $row['name']; ?></td>  
                 <td><?php echo $row['price']; ?></td>
                 <td><?php echo $row['category_name']; ?></td>
-                <td><?php echo $row['Additional_description']; ?></td>
+              
                  <td><img src="../Admin/assets/img/product/<?php echo $row['image']; ?>"  class="profile_img"></td>
                 <td id="mytd">
-                  <a href=""> <button class="btn btn-primary edit" data-id="<?php echo $row['cat_id']; ?>" data-bs-toggle="modal" data-bs-target="#edit_product"> <i class="fa fa-edit"></i></button></a>
+                  <a href=""> <button class="btn btn-primary edit" data-id="<?php echo $row['product_id']; ?>" data-bs-toggle="modal" data-bs-target="#edit_product"> <i class="fa fa-edit"></i></button></a>
 
-                  <a href="javascript:void(0)"><button class="btn btn-danger delete_btn" data-id="<?php echo $row['cat_id']; ?>"><i class="fa fa-trash"></i></button></a>
+                  <a href="javascript:void(0)"><button class="btn btn-danger delete_btn" data-id="<?php echo $row['product_id']; ?>"><i class="fa fa-trash"></i></button></a>
                 </td>
               </tr>
             <?php
@@ -349,8 +345,7 @@ require_once 'includes/aside.php';
         success: function(response) {
           // console.log("sdfs" + base_url);
           var userDetails = JSON.parse(response);
-          var userDetails = JSON.parse(response);
-    
+         
           $("#myid").val(userDetails.product_id);
           $("#product_edit_title").val(userDetails.name);
           $("#product_edit_description").val(userDetails.description);
@@ -404,29 +399,25 @@ require_once 'includes/aside.php';
 
           } else {
             // alert(res.errors.email);
-            // alert(res.errors. Product_title);
+            // alert(res.errors.Product_title);
 
-            if (res.errors.type) {
-              $("#type_error").text(res.errors.type);
-            } else {
-              $("#type_error").text("");
-            }
-            if (res.errors. Product_title) {
-              $("#name_error").text(res.errors. Product_title);
-            } else {
-              $("#name_error").text("");
-            }
-            if (res.errors.product_description) {
-              $("#product_description_error").text(res.errors.product_description);
-            } else {
-              $("#product_description_error").text("");
-            }
+           
+            // if (res.errors.Product_title) {
+            //   $("#name_error").text(res.errors.Product_title);
+            // } else {
+            //   $("#name_error").text("");
+            // }
+            // if (res.errors.product_description) {
+            //   $("#product_description_error").text(res.errors.product_description);
+            // } else {
+            //   $("#product_description_error").text("");
+            // }
 
-            if (res.errors.price) {
-              $("#product_price_error").text(res.errors.price);
-            } else {
-              $("#product_price_error").text("");
-            }
+            // if (res.errors.price) {
+            //   $("#product_price_error").text(res.errors.price);
+            // } else {
+            //   $("#product_price_error").text("");
+            // }
 
 
 
