@@ -43,10 +43,10 @@ require_once 'includes/aside.php';
   <div class="col-md-12">
     <div class="card mb-4" style="height: 2000px;">
       <div class="card-header">
-        List of  Product  Product
+        List of Product 
         <div class="mb-4 btn_user">
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_product">
-            <i class="fa fa-plus"></i>&nbsp; Add New  Product
+            <i class="fa fa-plus"></i>&nbsp; Add New Product
           </button>
           <div class="modal fade" id="add_product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -126,7 +126,7 @@ require_once 'includes/aside.php';
                   <div class="mb-3">
                     <label for=" Product_title" class="form-label"> Product Category</label>
 
-                    <select name="type" id="type" class="form-control">
+                    <select name="edit_type" id="edit_type" class="form-control">
                       <option value="">Select Type of  Product</option>
                       <?php
                       $cat_query = "SELECT * FROM categories";
@@ -138,29 +138,29 @@ require_once 'includes/aside.php';
                     </select>
                     <div id="type_error" class="error"></div>
 
-                    <label for=" Product_title" class="form-label">Title</label>
+                    <label for="Product_title" class="form-label">Title</label>
 
-                    <input type="text" name=" Product_title" id="product_title" class="form-control" placeholder="Enter  Product Title">
-                    <div id="name_error" class="error"></div>
+                    <input type="text" name="product_edit_title" id="product_edit_title" class="form-control" placeholder="Enter  Product Title">
+                    <div id="product_edit_title_error" class="error"></div>
                   </div>
                   <div class="mb-3">
                     <label for="des" class="form-label">Content / Description</label>
-                    <textarea name="product_description" id="description" rows="8" cols="50" class="form-control" placeholder="Enter the content or description"></textarea>
-                    <div id="product_description_error" class="error"></div>
+                    <textarea name="product_edit_description" id="product_edit_description" rows="8" cols="50" class="form-control" placeholder="Enter the content or description"></textarea>
+                    <div id="product_edit_description_error" class="error"></div>
 
 
                   </div>
                   <div class="mb-3">
                       <label for="image" class="form-label">Image</label>
-                      <input type="file" name="product_image" id=" Product_image" class="form-control">
+                      <input type="file" name="product_edit_image" id="product_edit_image" class="form-control">
                       <input type="hidden" name="old_product_image" id="old_product_image" value="">
                       
-                      <img src="" id=" Product_image_preview" width="250px" height="200px">
-                      <div id="product_image_err" class="error"></div>
+                      <img src="" id="product_image_preview" width="250px" height="200px">
+                      <div id="product_edit_image_error" class="error"></div>
                     </div>
                     <div class="mb-3">
                       <label for="price" class="form-label">Price</label>
-                      <input type="text" name="product_price" id=" Product_price" class="form-control" placeholder="Enter the price">
+                      <input type="text" name="product_edit_price" id="product_edit_price" class="form-control" placeholder="Enter the price">
   
                       <div id="product_price_error" class="error"></div>
                     </div>
@@ -185,11 +185,13 @@ require_once 'includes/aside.php';
           <thead>
             <tr>
               <th scope="col">Id</th>
-              <th scope="col">title</th>
-              <th scope="col"> Product_description</th>
+              <th scope="col">Name</th>
+              <th scope="col">Product_description</th>
               <th scope="col"> Product Price</th>
               <th scope="col">Type</th>
+              <th scope="col">Additional_description</th>
               <th scope="col">Image</th>
+
               <th scope="col">Operation</th>
 
               <!-- <th scope="col">Operation</th> -->
@@ -204,16 +206,17 @@ require_once 'includes/aside.php';
             while ($row = mysqli_fetch_assoc($result)) {
             ?>
               <tr>
-                <td><?php echo $row['id']; ?></td>
-                <td><?php echo $row['title']; ?></td>
+                <td><?php echo $row['cat_id']; ?></td>
+                <td><?php echo $row['name']; ?></td>
                 <td><?php echo $row['description']; ?></td>
                 <td><?php echo $row['price']; ?></td>
                 <td><?php echo $row['category_name']; ?></td>
-                <td><img src="../Admin/assets/img/product/<?php echo $row['image']; ?>"  class="profile_img"></td>
+                <td><?php echo $row['Additional_description']; ?></td>
+                 <td><img src="../Admin/assets/img/product/<?php echo $row['image']; ?>"  class="profile_img"></td>
                 <td id="mytd">
-                  <a href=""> <button class="btn btn-primary edit" data-id="<?php echo $row['id']; ?>" data-bs-toggle="modal" data-bs-target="#editcategory"> <i class="fa fa-edit"></i></button></a>
+                  <a href=""> <button class="btn btn-primary edit" data-id="<?php echo $row['cat_id']; ?>" data-bs-toggle="modal" data-bs-target="#edit_product"> <i class="fa fa-edit"></i></button></a>
 
-                  <a href="#"><button class="btn  btn-danger delete_btn" data-id="<?php echo $row['id']; ?>"><i class="fa fa-trash"></i></button></a>
+                  <a href="javascript:void(0)"><button class="btn btn-danger delete_btn" data-id="<?php echo $row['cat_id']; ?>"><i class="fa fa-trash"></i></button></a>
                 </td>
               </tr>
             <?php
@@ -339,21 +342,23 @@ require_once 'includes/aside.php';
         type: 'POST',
         data: {
           id: id,
-          "action": "category_view",
+          "action": "product_view",
         },
 
 
         success: function(response) {
           // console.log("sdfs" + base_url);
           var userDetails = JSON.parse(response);
-
-          $("#myid").val(userDetails.id);
-          $("#category_title").val(userDetails.title);
-          $("#description").val(userDetails.description);
-          $("# Product_price").val(userDetails.price);
-          $("#type").val(userDetails.category_id);
-          $("# Product_image_preview").attr('src', base_url + "admin/assets/img/ Product/" + userDetails.image);
-          $("#old_category_image").val(userDetails.image);
+          var userDetails = JSON.parse(response);
+    
+          $("#myid").val(userDetails.product_id);
+          $("#product_edit_title").val(userDetails.name);
+          $("#product_edit_description").val(userDetails.description);
+          $("#product_edit_price").val(userDetails.price);
+          $("#edit_type").val(userDetails.cat_id);
+          $("#product_image_preview").attr('src',  "../admin/assets/img/product/" + userDetails.image);
+          $("#old_product_image").val(userDetails.image);
+          $("#edit_additional_description").val(userDetails.Additional_description);
 
 
           // $("# Product_image").val(userDetails.image);

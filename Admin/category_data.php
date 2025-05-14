@@ -195,11 +195,13 @@ if ($_POST['action'] == "category_del") {
   }
 }
 
-if ($_POST['action'] == "category_view") {
+if ($_POST['action'] == "product_view") {
   $id = $_POST['id'];
+ 
 
 
-  $select = "SELECT * FROM menu where id='$id'";
+  $select = "SELECT * FROM product where product_id='$id'";
+  
   $result = mysqli_query($con_query, $select);
   $row = mysqli_fetch_assoc($result);
   echo json_encode($row);
