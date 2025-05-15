@@ -110,6 +110,8 @@ if ($_POST['action'] == "category_insert") {
 
 
     if ($result_category) {
+      move_uploaded_file($fileTmpPath, $destPath);
+
       $data = [
         "status" => 200,
         "msg" => " Category saved successfully",
@@ -123,9 +125,20 @@ if ($_POST['action'] == "category_insert") {
 if ($_POST['action'] == "category_del") {
   $id  = $_POST['id'];
 
+  $select_image = "select category_image from categories where id= '$id'";
+ $result_img = mysqli_query($con_query, $select_image);
+  $data = mysqli_fetch_assoc($result_img);
   $del_category = "delete from categories where id = '$id'";
+ 
   $del_result = mysqli_query($con_query, $del_category);
-  if ($del_result) {
+  if($del_result) {
+    $image = $data['category_image'];
+     if ($image) {
+      $filePath = "../Admin/assets/img/category/" . $image;
+      if (file_exists($filePath)) {
+        unlink($filePath);
+      }
+    }
     $output =
       [
         'msg' => "Data deleted successfully",
