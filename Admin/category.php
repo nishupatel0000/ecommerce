@@ -31,13 +31,13 @@ require_once 'includes/aside.php';
 </style>
 <div class="row align-items-center mb-3">
     <div class="col-sm-6">
-        <h3 class="mb-0 fw-semibold">   Category </h3>
+        <h3 class="mb-0 fw-semibold"> Category </h3>
     </div>
     <div class="col-sm-6">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-sm-end mb-0">
                 <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">  Category</li>
+                <li class="breadcrumb-item active" aria-current="page"> Category</li>
             </ol>
         </nav>
     </div>
@@ -47,7 +47,7 @@ require_once 'includes/aside.php';
     <div class="col-md-12">
         <div class="card mb-4" style="height: 2000px;">
             <div class="card-header">
-                List of   category
+                List of category
                 <div class="mb-4 btn_user">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_category ">
                         <i class="fa fa-plus"></i>&nbsp; Add New Category
@@ -70,8 +70,13 @@ require_once 'includes/aside.php';
                                                 <option value="Lunch">Lunch</option>
                                                 <option value="Dinner">Dinner</option>
                                             </select> -->
-                                            <input type="text" name="type" id="type" class="form-control" placeholder="Enter Category Name">
-                                            <div id="type_err" class="error"></div>
+                                            <input type="text" name="category_type" id="category_type" class="form-control" placeholder="Enter Category Name">
+                                            <div id="category_type_error" class="error"></div>
+
+                                            <label for="image" class="form-label">Image</label>
+                                            <input type="file" name="category_image" id="category_image" class="form-control">
+                                            <div id="category_image_error" class="error"></div>
+
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -83,41 +88,45 @@ require_once 'includes/aside.php';
                     </div>
                 </div>
             </div>
-         <div class="modal fade" id="editcategory" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form method="POST" id="edit_category">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Category</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+            <div class="modal fade" id="editcategory" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form method="POST" id="edit_category">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Category</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
 
-                <div class="modal-body">
-                    <!-- Loader -->
-                    <div id="loader" style="display: none; text-align: center; padding: 20px;">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                            <div class="modal-body">
+                                <!-- Loader -->
+                                <div id="loader" style="display: none; text-align: center; padding: 20px;">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+
+                                <!-- Form content -->
+                                <div id="form_content">
+                                    <input type="hidden" name="id" id="myid">
+                                    <div class="mb-3">
+                                        <label for="category_type" class="form-label">Category Name</label>
+                                        <input type="text" name="category_edit_type" id="category_edit_type" class="form-control" placeholder="Enter Category Name">
+                                        <div id="category_edit_type_error" class="error text-danger mt-1"></div>
+                                        <label for="image" class="form-label">Image</label>
+                                        <input type="file" name="category_edit_image" id="category_edit_image" class="form-control">
+                                        <input type="hidden" name="old_category_image" id="old_category_image" value="">
+                                        <img src="" id="category_image_preview" width="250px" height="200px">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <input type="submit" class="btn btn-primary" name="update" value="Update" id="update_category">
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Form content -->
-                    <div id="form_content">
-                        <input type="hidden" name="id" id="myid">
-                        <div class="mb-3">
-                            <label for="category_type" class="form-label">Category Name</label>
-                            <input type="text" name="type" id="category_type" class="form-control" placeholder="Enter Category Name">
-                            <div id="type_er" class="error text-danger mt-1"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" name="update" value="Update" id="update_category">
+                    </form>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
 
             <div class="card-body">
 
@@ -194,10 +203,15 @@ require_once 'includes/aside.php';
                         // location.reload(true);
                     } else {
 
-                        if (data.errors.type) {
-                            $("#type_err").text(data.errors.type);
+                        if (data.errors.category_type) {
+                            $("#category_type_error").text(data.errors.category_type);
                         } else {
-                            $("#type_err").text("");
+                            $("#category_type_error").text("");
+                        }
+                           if (data.errors.category_image) {
+                            $("#category_image_error").text(data.errors.category_image);
+                        } else {
+                            $("#category_image_error").text("");
                         }
                     }
                 }
@@ -268,7 +282,9 @@ require_once 'includes/aside.php';
 
                 $("#myid").val(userDetails.id);
 
-                $("#category_type").val(userDetails.category_name);
+                $("#category_edit_type").val(userDetails.category_name);
+                $("#category_image_preview").attr('src', "../admin/assets/img/category/" + userDetails.category_image);
+                $("#old_category_image").val(userDetails.category_image);
                 $("#loader").hide();
                 $("#form_content").show();
             },
@@ -313,9 +329,9 @@ require_once 'includes/aside.php';
                     // alert(res.errors.email);
 
                     if (res.errors.type) {
-                        $("#type_er").text(res.errors.type);
+                        $("#category_edit_type_error").text(res.errors.type);
                     } else {
-                        $("#type_er").text("");
+                        $("#category_edit_type_error").text("");
                     }
                 }
             }

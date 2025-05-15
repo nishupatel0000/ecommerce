@@ -91,9 +91,9 @@ if (isset($_SESSION['user_id'])) {
     }
 
     .profile_img {
-      width: 150px;
-      height: 150px;
-      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
     }
 
     .innerdiv {

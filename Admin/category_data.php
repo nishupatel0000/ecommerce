@@ -2,97 +2,8 @@
 require_once '../common/config.php';
 
 
-if ($_POST['action'] == "product_insert") {
-
-  if (empty($_POST['product_title'])) {
-    $error['product_title'] = ' *Product Name is required';
-  } else {
-
-    $product_title = $_POST['product_title'];
-  }
-
-  if (empty($_POST['product_description'])) {
-    $error['product_description'] = ' * Description is required';
-  } else {
-
-    $product_description = $_POST['product_description'];
-  }
-
-  if (empty($_FILES['product_image']['name'])) {
-    $error['product_image'] = " * Image is empty";
-  } else {
 
 
-
-    $fileTmpPath = $_FILES['product_image']['tmp_name'];
-    $originalName = $_FILES['product_image']['name'];
-    $fileExt = pathinfo($originalName, PATHINFO_EXTENSION);
-
-
-    $randomName = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
-
-
-    $newFileName = $randomName . '.' . $fileExt;
-
-    $uploadDir = '../Admin/assets/img/product/';
-
-    $destPath = $uploadDir . $newFileName;
-
-
-    if (!is_dir($uploadDir)) {
-      mkdir($uploadDir, 0755, true);
-    }
-  }
-
-  if (empty($_POST['product_price'])) {
-    $error['product_price'] = ' * field is required';
-  } else {
-
-    $product_price = $_POST['product_price'];
-  }
-
-
-  if (empty($_POST['additional_description'])) {
-    $error['additional_description'] = ' * additional_description is required';
-  } else {
-    
-    $additional_description = $_POST['additional_description'];
-  }
-  
-  if (empty($_POST['type'])) {
-    $error['type'] = ' * select any category';
-  } else {
-
-    $type = $_POST['type'];
-  }
-
-
-
-  if (!empty($error)) {
-    $allerror = [
-
-      'errors' => $error
-
-    ];
-    echo json_encode($allerror);
-    return false;
-  } else {
-    $insert_product = "insert into product(name,description,image,price,Additional_description,cat_id )values('$product_title','$product_description','$newFileName','$product_price','$additional_description','$type')";
-    $result_product = mysqli_query($con_query, $insert_product);
-
-
-    if ($result_product) {
-      move_uploaded_file($fileTmpPath, $destPath);
-
-      $data = [
-        "status" => 200,
-        "msg" => "your data saved successfully",
-      ];
-      echo json_encode($data);
-      return true;
-    }
-  }
-}
 
 
 if ($_POST['action'] == "category_delete") {
@@ -149,11 +60,39 @@ if ($_POST['action'] == "chef_delete") {
 
 if ($_POST['action'] == "category_insert") {
 
-  if (empty($_POST['type'])) {
-    $error['type'] = ' * Field is required';
+  if (empty($_POST['category_type'])) {
+    $error['category_type'] = ' * Field is required';
   } else {
 
-    $type = $_POST['type'];
+    $type = $_POST['category_type'];
+  }
+
+
+    if (empty($_FILES['category_image']['name'])) {
+    $error['category_image'] = " * Image is empty";
+     
+  } else {
+
+
+
+    $fileTmpPath = $_FILES['category_image']['tmp_name'];
+    $originalName = $_FILES['category_image']['name'];
+    $fileExt = pathinfo($originalName, PATHINFO_EXTENSION);
+
+
+    $randomName = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
+
+
+    $newFileName = $randomName . '.' . $fileExt;
+
+    $uploadDir = '../Admin/assets/img/category/';
+
+    $destPath = $uploadDir . $newFileName;
+
+
+    if (!is_dir($uploadDir)) {
+      mkdir($uploadDir, 0755, true);
+    }
   }
 
   if (!empty($error)) {
@@ -166,7 +105,7 @@ if ($_POST['action'] == "category_insert") {
     return false;
   } else {
 
-    $insert_category = "insert into categories(category_name)values('$type')";
+    $insert_category = "insert into categories(category_name,category_image)values('$type','$newFileName')";
     $result_category = mysqli_query($con_query, $insert_category);
 
 
@@ -209,11 +148,41 @@ if ($_POST['action'] == "product_view") {
 if ($_POST['action'] == "update_category_data") {
   $id = $_POST['id'];
 
-  if (empty($_POST['type'])) {
+  if (empty($_POST['category_edit_type'])) {
     $err['type'] = "*Field is required";
   } else {
-    $type = $_POST['type'];
+    $type = $_POST['category_edit_type'];
   }
+
+    if (empty($_FILES['category_edit_image']['name'])) {
+
+    $newFileName = $_POST['old_category_image'];
+  } else {
+
+
+
+
+    $fileTmpPath = $_FILES['category_edit_image']['tmp_name'];
+    $originalName = $_FILES['category_edit_image']['name'];
+    $fileExt = pathinfo($originalName, PATHINFO_EXTENSION);
+
+
+    $randomName = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
+
+    $newFileName = $randomName . '.' . $fileExt;
+    $uploadDir = '../Admin/assets/img/category/';
+    $destPath = $uploadDir . $newFileName;
+    if (!is_dir($uploadDir)) {
+      mkdir($uploadDir, 0755, true);
+    }
+    move_uploaded_file($fileTmpPath, $destPath);
+    $oldimage = $uploadDir . $_POST['old_category_image'];
+    if (file_exists($oldimage)) {
+      unlink($oldimage);
+    }
+  }
+
+
   if (!empty($err)) {
     $allerrs = [
       'code' => 404,
@@ -222,7 +191,7 @@ if ($_POST['action'] == "update_category_data") {
     echo json_encode($allerrs);
     return false;
   } else {
-    $update = "UPDATE categories SET category_name='$type' WHERE id='$id'";
+    $update = "UPDATE categories SET category_name='$type',category_image='$newFileName' WHERE id='$id'";
     $result = mysqli_query($con_query, $update);
     if ($result) {
       $output = [
@@ -251,6 +220,112 @@ if ($_POST['action'] == "category_edit") {
   echo json_encode($row);
 }
 
+if ($_POST['action'] == "product_insert") {
+
+  if (empty($_POST['product_title'])) {
+    $error['product_title'] = ' *Product Name is required';
+  } else {
+
+    $product_title = $_POST['product_title'];
+  }
+
+  if (empty($_POST['product_description'])) {
+    $error['product_description'] = ' * Description is required';
+  } else {
+
+    $product_description = $_POST['product_description'];
+  }
+
+  if (empty($_FILES['product_image']['name'])) {
+    $error['product_image'] = " * Image is empty";
+     
+  } else {
+
+
+
+    $fileTmpPath = $_FILES['product_image']['tmp_name'];
+    $originalName = $_FILES['product_image']['name'];
+    $fileExt = pathinfo($originalName, PATHINFO_EXTENSION);
+
+
+    $randomName = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
+
+
+    $newFileName = $randomName . '.' . $fileExt;
+
+    $uploadDir = '../Admin/assets/img/product/';
+
+    $destPath = $uploadDir . $newFileName;
+
+
+    if (!is_dir($uploadDir)) {
+      mkdir($uploadDir, 0755, true);
+    }
+  }
+
+  if (empty($_POST['product_price'])) {
+    $error['product_price'] = ' * Field is required';
+  } else {
+
+    $product_price = $_POST['product_price'];
+  }
+
+
+  if (empty($_POST['additional_description'])) {
+    $error['additional_description'] = ' * Additional description is required';
+  } else {
+    
+    $additional_description = $_POST['additional_description'];
+  }
+
+  if(empty($_POST['gender'])){
+    $error['gender'] = ' * Gender is required'; 
+  }
+  else{
+      $gender = $_POST['gender'];
+  
+      
+  }
+  
+  if (empty($_POST['type'])) {
+    $error['type'] = ' * Select any category';
+  } else {
+
+    $type = $_POST['type'];
+  }
+
+
+
+  if (!empty($error)) {
+    $allerror = [
+
+      'errors' => $error
+
+    ];
+    echo json_encode($allerror);
+    return false;
+  } else {
+    $insert_product = "insert into product(name,description,image,price,additional_description,gender,cat_id)values('$product_title','$product_description','$newFileName','$product_price','$additional_description','$gender','$type')";
+ 
+   
+    $result_product = mysqli_query($con_query, $insert_product);
+
+
+    if ($result_product) {
+      move_uploaded_file($fileTmpPath, $destPath);
+
+      $data = [
+        "status" => 200,
+        "msg" => "your data saved successfully",
+      ];
+      echo json_encode($data);
+      return true;
+    }
+
+  }
+}
+
+
 if ($_POST['action'] == "product_update") {
 
 
@@ -275,6 +350,8 @@ if ($_POST['action'] == "product_update") {
     $product_edit_description = $_POST['product_edit_description'];
   }
 
+ 
+
 
   if (empty($_POST['product_edit_price'])) {
     $err['product_edit_price'] = "*Field is required";
@@ -288,6 +365,8 @@ if ($_POST['action'] == "product_update") {
   } else {
     $edit_additional_description = $_POST['edit_additional_description'];
   }
+
+  $gender=$_POST['gender_edit'];
 
 
   if (empty($_FILES['product_edit_image']['name'])) {
@@ -326,7 +405,7 @@ if ($_POST['action'] == "product_update") {
     echo json_encode($allerrs);
     return false;
   } else {
-    $update = "UPDATE product SET name='$product_edit_title',description='$product_edit_description',image='$newFileName',price='$price',Additional_description='$edit_additional_description',cat_id='$category_id'  WHERE product_id ='$id'";
+    $update = "UPDATE product SET name='$product_edit_title',description='$product_edit_description',image='$newFileName',price='$price',additional_description='$edit_additional_description',gender='$gender',cat_id='$category_id'  WHERE product_id ='$id'";
     $result = mysqli_query($con_query, $update);
     if ($result) {
 

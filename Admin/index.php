@@ -1,7 +1,7 @@
 <?php
  
  session_start();
- require_once '../common/config.php';
+ include_once '../common/config.php';
   if (isset($_SESSION['logout_msg'])): ?>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
