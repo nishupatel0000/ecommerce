@@ -24,7 +24,6 @@ require_once 'includes/aside.php';
     font-size: 18px;
 
   }
- 
 </style>
 <div class="row align-items-center mb-3">
   <div class="col-sm-6">
@@ -100,9 +99,20 @@ require_once 'includes/aside.php';
                     <label for="des" class="form-label">Additional Description</label>
                     <textarea name="additional_description" id="additional_description" rows="5" cols="50" class="form-control" placeholder="Enter  Additional description"></textarea>
                     <div id="additional_description_error" class="error"></div>
+                    <label for="cat_title" class="form-label">Color</label>
+                    <select name="color" id="color" class="form-control">
+                      <option value="">Select color of product</option>
+                      <?php
+                      $cat_query = "SELECT * FROM colors";
+                      $cat_result = mysqli_query($con_query, $cat_query);
+                      while ($cat = mysqli_fetch_assoc($cat_result)) {
+                        echo '<option value="' . $cat['color_id'] . '">' . $cat['color_name'] . '</option>';
+                      }
+                      ?>
+                    </select>
+                    <div id="color_error" class="error"></div>
 
                     <label>Gender:</label><br>
-
                     <input type="radio" id="male" name="gender" value="male">
                     <label for="male">male</label><br>
 
@@ -179,6 +189,19 @@ require_once 'includes/aside.php';
                     <label for="des" class="form-label">Additional Description</label>
                     <textarea name="edit_additional_description" id="edit_additional_description" rows="18" cols="50" class="form-control" placeholder="Enter the content or description"></textarea>
                     <div id="edit_additional_description_error" class="error"></div>
+                    
+                      <label for="cat_title" class="form-label">Color</label>
+                    <select name="edit_color" id="edit_color" class="form-control">
+                      <option value="">Select color of product</option>
+                      <?php
+                      $cat_query = "SELECT * FROM colors";
+                      $cat_result = mysqli_query($con_query, $cat_query);
+                      while ($cat = mysqli_fetch_assoc($cat_result)) {
+                        echo '<option value="' . $cat['color_id'] . '">' . $cat['color_name'] . '</option>';
+                      }
+                      ?>
+                    </select>
+                    <div id="color_edit_error" class="error"></div>
                     <label>Gender:</label><br>
 
                     <div>
@@ -329,7 +352,11 @@ require_once 'includes/aside.php';
             } else {
               $("#type_error").text("");
             }
-
+            if (data.errors.color) {
+              $("#color_error").text(data.errors.color);
+            } else {
+              $("#color_error").text("");
+            }
 
           }
         }
@@ -398,6 +425,8 @@ require_once 'includes/aside.php';
           $("#old_product_image").val(userDetails.image);
           $("#edit_additional_description").val(userDetails.additional_description);
           $('input[name="gender_edit"][value="' + genderValue + '"]').prop('checked', true);
+          $("#edit_color").val(userDetails.color_id);
+         
           // $("# Product_image").val(userDetails.image);
 
 
@@ -479,6 +508,13 @@ require_once 'includes/aside.php';
               $("#edit_type_error").text(res.errors.edit_type);
             } else {
               $("#edit_type_error").text("");
+            }
+
+            
+            if (res.errors.edit_color) {
+              $("#color_edit_error").text(res.errors.edit_color);
+            } else {
+              $("#color_edit_error").text("");
             }
 
 

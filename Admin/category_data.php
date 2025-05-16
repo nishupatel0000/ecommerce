@@ -233,6 +233,137 @@ if ($_POST['action'] == "category_edit") {
   echo json_encode($row);
 }
 
+if ($_POST['action'] == "color_insert") {
+
+  if (empty($_POST['color_name'])) {
+    $error['color_name'] = ' * Field is required';
+  } else {
+
+    $color_name = $_POST['color_name'];
+  }
+
+
+   
+
+  if (!empty($error)) {
+    $allerror = [
+
+      'errors' => $error
+
+    ];
+    echo json_encode($allerror);
+    return false;
+  } else {
+
+    $insert_color = "insert into colors(color_name)values('$color_name')";
+    $result_color = mysqli_query($con_query,$insert_color);
+
+
+    if ($result_color) {
+     
+
+      $data = [
+        "status" => 200,
+        "msg" => " color saved successfully",
+      ];
+      echo json_encode($data);
+      return false;
+    }
+  }
+}
+
+if ($_POST['action'] == "color_edit") {
+  $id = $_POST['id'];
+
+ 
+  $select = "SELECT * FROM colors where color_id='$id'";
+  $result = mysqli_query($con_query, $select);
+  $row = mysqli_fetch_assoc($result);
+  echo json_encode($row);
+}
+
+
+if ($_POST['action'] == "update_color_data") {
+
+ 
+
+  $id = $_POST['color_old_id'];
+  
+
+
+  
+  if (empty($_POST['color_edit_name'])) {
+    $err['color_edit_name'] = "*Field is required";
+  } else {
+    $color_edit_name = $_POST['color_edit_name'];
+  }
+
+  
+
+ 
+
+
+  
+  
+
+ 
+
+  if (!empty($err)) {
+    $allerrs = [
+      'code' => 404,
+      'errors' => $err,
+    ];
+    echo json_encode($allerrs);
+    return false;
+  } else {
+    $update = "UPDATE colors SET color_name='$color_edit_name'   WHERE color_id ='$id'";
+    $result = mysqli_query($con_query, $update);
+    if ($result) {
+
+
+      $output = [
+        'code' => 200,
+        'msg' => "Menu Updated successfully!!!"
+      ];
+      echo json_encode($output);
+      return true;
+    } else {
+      $dberr = [
+        "code" => 404,
+        "msg"  => "any database related problem"
+      ];
+      echo json_encode($dberr);
+      return false;
+    }
+  }
+}
+
+// if ($_POST['action'] == "color_del") {
+//   $id = $_POST['id'];
+
+
+
+
+//   $del_color = "delete from colors where color_id = '$id'";
+ 
+//   $del_result= mysqli_query($con_query, $del_color);
+
+//   if ($del_result ) {
+   
+//     $output =
+//       [
+//         'msg' => "Data deleted successfully",
+//       ];
+//     echo json_encode($output);
+//   }
+
+//   else{
+//     echo "data will not deleted";
+
+//   }
+// }
+
+
 if ($_POST['action'] == "product_insert") {
 
   if (empty($_POST['product_title'])) {
@@ -307,6 +438,13 @@ if ($_POST['action'] == "product_insert") {
     $type = $_POST['type'];
   }
 
+    if (empty($_POST['color'])) {
+    $error['color'] = ' * Select any color';
+  } else {
+
+    $color = $_POST['color'];
+  }
+
 
 
   if (!empty($error)) {
@@ -318,7 +456,7 @@ if ($_POST['action'] == "product_insert") {
     echo json_encode($allerror);
     return false;
   } else {
-    $insert_product = "insert into product(name,description,image,price,additional_description,gender,cat_id)values('$product_title','$product_description','$newFileName','$product_price','$additional_description','$gender','$type')";
+    $insert_product = "insert into product(name,description,image,price,additional_description,gender,cat_id,color_id)values('$product_title','$product_description','$newFileName','$product_price','$additional_description','$gender','$type','$color')";
  
    
     $result_product = mysqli_query($con_query, $insert_product);
@@ -346,6 +484,12 @@ if ($_POST['action'] == "product_update") {
     $err['edit_type'] = "field is required";
   } else {
     $category_id = $_POST['edit_type'];
+  }
+
+    if (empty($_POST['edit_color'])) {
+    $err['edit_color'] = "field is required";
+  } else {
+    $color_id = $_POST['edit_color'];
   }
 
   $id = $_POST['id'];
@@ -418,7 +562,7 @@ if ($_POST['action'] == "product_update") {
     echo json_encode($allerrs);
     return false;
   } else {
-    $update = "UPDATE product SET name='$product_edit_title',description='$product_edit_description',image='$newFileName',price='$price',additional_description='$edit_additional_description',gender='$gender',cat_id='$category_id'  WHERE product_id ='$id'";
+    $update = "UPDATE product SET name='$product_edit_title',description='$product_edit_description',image='$newFileName',price='$price',additional_description='$edit_additional_description',gender='$gender',cat_id='$category_id',color_id='$color_id'  WHERE product_id ='$id'";
     $result = mysqli_query($con_query, $update);
     if ($result) {
 

@@ -129,7 +129,8 @@ include_once 'includes/navbar.php';
                 $category_id = $data['id'];
         ?>
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                    <a class="text-decoration-none" href="display_product.php/<?php echo $data['category_name'];?>?id=<?php echo $data['id'];?>">
+                  <a class="text-decoration-none" href="shop.php?category_name=<?php echo $data['category_name']; ?>&category_id=<?php echo $data['id']; ?>">
+
                         <div class="cat-item d-flex align-items-center mb-4">
                             <div class="overflow-hidden" style="width: 100px; height: 100px;">
                                 <img class="img-fluid" src="../Admin/assets/img/category/<?php echo $data['category_image']; ?>" alt="">

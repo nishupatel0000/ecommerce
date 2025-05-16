@@ -59,6 +59,12 @@
                  <p>Category</p>
                </a>
              </li>
+                <li class="nav-item">
+               <a href="color.php" class="nav-link <?= ($current_page == 'color.php') ? 'li-active' : '' ?>">
+                 <i class="nav-icon bi bi-brush"></i>
+                 <p>Color</p>
+               </a>
+             </li>
              <li class="nav-item">
                <a href="product.php" class="nav-link <?= ($current_page == 'category_info.php') ? 'li-active' : '' ?>">
                  <i class="nav-icon bi bi-menu-button-wide-fill"></i>
