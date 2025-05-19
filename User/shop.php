@@ -5,40 +5,6 @@ include_once '../common/config.php';
 include_once 'includes/topbar.php';
 include_once 'includes/navbar.php';
 
-if (isset($_POST['action']) == "range_display") {
-
-    if (isset($_POST['checkbox_value']) && $_POST['checkbox_value'] != NULL) {
-
-        $seleced_value = $_POST['checkbox_value'];
-
-        $min = min(array_map(function ($range) {
-            return (int)explode('-', $range)[0];
-        }, $seleced_value));
-        $max = max(array_map(function ($range) {
-
-            return (int)explode('-', $range)[1];
-        }, $seleced_value));
-
-
-
-        $category_select = "select * from product WHERE price BETWEEN '$min' AND '$max'";
-        $result_select = mysqli_query($con_query, $category_select);
-        while ($result = mysqli_fetch_assoc($result_select)) {
-            $row[] = $result;
-        }
-        if ($row) {
-         
-            $output = [
-                'code' => 200,
-                'msg' => "data display successfully!!!",
-                'data' => $row,
-            ];
-            echo json_encode($output);
-            return true;
-            exit();
-        }
-    }
-}
 
 
 if (isset($_GET['category_id'])) {

@@ -206,19 +206,20 @@
 
 
              $.ajax({
-                 url: "shop.php",
+                 url: "get_data.php",
                  type: "POST",
-                //  dataType: "json",
+                 dataType: "json",
                  data: {
                      action: "range_display",
                      checkbox_value: selectedValues
                  },
 
                  success: function(data) {
-                     alert("hello");
-                    console.log(data);
+                
+                //   alert(data.code);
                      if (data.code == 200) {
                          console.log("Success result:", data.data);
+                         alert(data.data);
                      }
                  },
                  error: function(xhr, status, error) {
