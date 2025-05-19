@@ -1,44 +1,39 @@
 <?php
 require_once '../common/config.php';
 
-if (isset($_POST['filters'])) {
-    // Get the selected filters
-    $filters = $_POST['filters']; // An array of selected filters (price, color, gender)
 
-    // Example of building the SQL query based on selected filters
-    $query = "SELECT * FROM product";
 
-    // Add conditions based on filters
-    if (in_array("0-100", $filters)) {
-        $query .= " AND price BETWEEN 0 AND 100";
-    }
-    if (in_array("color_red", $filters)) {
-        $query .= " AND color = 'red'";
-    }
-    if (in_array("gender_men", $filters)) {
-        $query .= " AND gender = 'men'";
-    }
+ 
+   $select_query = "SELECT * FROM product";
+if (isset($_POST['checkbox_value']) && $_POST['checkbox_value'] != NULL) {
 
-    // Execute the query
-    $result = mysqli_query($con_query, $query);
-    
-    // Check if any products match
-    if (mysqli_num_rows($result) > 0) {
-        $productsHtml = '';
+    $seleced_value = $_POST['checkbox_value'];
+    print_r($seleced_value) . "<br>";
 
-        // Loop through the products and generate HTML for them
-        while ($row = mysqli_fetch_assoc($result)) {
-            $productsHtml .= "<div class='product'>";
-            $productsHtml .= "<img src='" . $row['image_url'] . "' alt='" . $row['name'] . "' />";
-            $productsHtml .= "<p>" . $row['name'] . "</p>";
-            $productsHtml .= "<p>$" . $row['price'] . "</p>";
-            $productsHtml .= "</div>";
+
+    $min = min(array_map(function ($range) {
+        return (int)explode('-', $range)[0];
+    }, $seleced_value));
+
+
+    $max = max(array_map(function ($range) {
+
+        return (int)explode('-', $range)[1];
+    }, $seleced_value));
+
+
+
+    $select_query .= " WHERE price BETWEEN '$min' AND '$max'";
+
+   
+} 
+ 
+ $result_query = mysqli_query($con_query, $select_query);
+    if ($row = mysqli_num_rows($result_query)) {
+        while (($data = mysqli_fetch_assoc($result_query))) {
+
+            echo "<pre>";
+            print_r($data);
+            echo "</pre>";
         }
-
-        // Return the products in JSON format
-        echo json_encode(['success' => true, 'productsHtml' => $productsHtml]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'No products found']);
     }
-}
-?>

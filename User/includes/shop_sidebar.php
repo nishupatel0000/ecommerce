@@ -44,30 +44,31 @@
         $ranges[] = ['from' => $check_from + 1, 'to' => null]; // 6th range: "more"
     } elseif ($more_count > 10) {
 
-        $step += 50; // Increase step to reduce compression
+        $step += 50;
         $ranges = [];
         for ($i = 0; $i < $range_count; $i++) {
             $from = $start + ($i * $step);
             $to = $from + $step - 1;
             $ranges[] = ['from' => $from, 'to' => $to];
         }
-        // Re-check upper range if still needed
+
         $check_from = $ranges[$range_count - 1]['to'];
         $sql = "SELECT COUNT(*) AS more_count FROM product WHERE product_price > $check_from";
         $result = $conn->query($sql);
         $row = $result->fetch_assoc();
         $more_count = (int)$row['more_count'];
         if ($more_count > 0 && $more_count <= 10) {
-            $ranges[] = ['from' => $check_from + 1, 'to' => null]; // Add 6th
+            $ranges[] = ['from' => $check_from + 1, 'to' => null];
         }
     }
 
     ?>
  <div class="col-lg-3 col-md-4">
-     <!-- Price Start -->
+     <p id="GFG_DOWN">
+         <!-- Price Start -->
      <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by price</span></h5>
      <div class="bg-light p-4 mb-30">
-         <form method="POST">
+         <form id="slider_form">
              <!-- All Prices Option -->
              <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                  <input type="checkbox" class="custom-control-input" id="price-all" name="price_range[]" value="all">
@@ -99,12 +100,12 @@
                     $count = (int)$row['cnt'];
 
                     echo "
-                    <div class=\"custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3\">
-                        <input type=\"checkbox\" class=\"custom-control-input\" id=\"price_all_$value\" name=\"price_range[]\" value=\"$value\">
-                        <label class=\"custom-control-label\" for=\"price_all_$value\">$range_label</label>
-                        <span class=\"badge border font-weight-normal\">$count</span>
-                    </div>
-                    ";
+<div class=\"custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3\">
+    <input type=\"checkbox\" class=\"custom-control-input\" id=\"price_all_$value\" name=\"price_range[]\" value=\"$value\">
+    <label class=\"custom-control-label\" for=\"price_all_$value\">$range_label</label>
+    <span class=\"badge border font-weight-normal\">$count</span>
+</div>
+";
                 }
                 ?>
 
@@ -180,12 +181,60 @@
  <script>
      $(document).ready(function() {
 
-         $(".custom-control-input").click(function() {
-             var checkboxId = $(this).attr("id");
-             //    alert(checkboxId);
+         $(".custom-control-input").on("change", function(e) {
+             e.preventDefault();
+             let selectedValues = [];
 
-             // Now you can use checkboxId as needed
+
+             $('input[name="price_range[]"]:checked').each(function() {
+                 selectedValues.push($(this).val());
+                 if (selectedValues.length) {
+                     if (selectedValues != "all") {
+
+
+
+
+                     } else {
+                         selectedValues = "";
+                     }
+                 } else {
+                     $('#GFG_DOWN')
+                         .text("Checkbox is not selected, Please select one!");
+                 }
+             });
+
+
+
+             $.ajax({
+                 url: "shop.php",
+                 type: "POST",
+                //  dataType: "json",
+                 data: {
+                     action: "range_display",
+                     checkbox_value: selectedValues
+                 },
+
+                 success: function(data) {
+                     alert("hello");
+                    console.log(data);
+                     if (data.code == 200) {
+                         console.log("Success result:", data.data);
+                     }
+                 },
+                 error: function(xhr, status, error) {
+                    console.log("error");
+                     console.error("AJAX error:", status, error);
+                     console.log("Response text:", xhr.responseText); 
+                 }
+
+             })
+
+
+
+
+
+
          });
 
-     })
+     });
  </script>

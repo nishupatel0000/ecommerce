@@ -1,15 +1,51 @@
 <?php
-
-if (isset($_GET['category_id'])) {
-    $category_name = $_GET['category_name'];
-    $category_id = $_GET['category_id'];
-}
-
 $pageTitle = "Products - Shop the Latest Fashion & Deals";
 include_once 'includes/header.php';
 include_once '../common/config.php';
 include_once 'includes/topbar.php';
 include_once 'includes/navbar.php';
+
+if (isset($_POST['action']) == "range_display") {
+
+    if (isset($_POST['checkbox_value']) && $_POST['checkbox_value'] != NULL) {
+
+        $seleced_value = $_POST['checkbox_value'];
+
+        $min = min(array_map(function ($range) {
+            return (int)explode('-', $range)[0];
+        }, $seleced_value));
+        $max = max(array_map(function ($range) {
+
+            return (int)explode('-', $range)[1];
+        }, $seleced_value));
+
+
+
+        $category_select = "select * from product WHERE price BETWEEN '$min' AND '$max'";
+        $result_select = mysqli_query($con_query, $category_select);
+        while ($result = mysqli_fetch_assoc($result_select)) {
+            $row[] = $result;
+        }
+        if ($row) {
+         
+            $output = [
+                'code' => 200,
+                'msg' => "data display successfully!!!",
+                'data' => $row,
+            ];
+            echo json_encode($output);
+            return true;
+            exit();
+        }
+    }
+}
+
+
+if (isset($_GET['category_id'])) {
+    $category_name = $_GET['category_name'];
+    $category_id = $_GET['category_id'];
+} else {
+}
 
 
 
@@ -80,14 +116,19 @@ include_once 'includes/navbar.php';
                         $category_select = "select * from product";
 
                         if (isset($_GET['category_id'])) {
-                   $category_select .= " WHERE product.cat_id = " . (int)$_GET['category_id'];
-
-
+                            $category_select .= " WHERE product.cat_id = " . (int)$_GET['category_id'];
                         }
 
+
+
+
                         $result_select = mysqli_query($con_query, $category_select);
-                        if (mysqli_num_rows($result_select) > 0) {
+                        $row = mysqli_num_rows($result_select);
+
+                        if ($rows = mysqli_num_rows($result_select) > 0) {
+
                             while ($data = mysqli_fetch_assoc($result_select)) {
+
                         ?>
                                 <!-- Product Item -->
                                 <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
@@ -105,7 +146,7 @@ include_once 'includes/navbar.php';
                                             <a class="h6 text-decoration-none text-truncate" href=""><?php echo $data['name']; ?></a>
                                             <div class="d-flex align-items-center justify-content-center mt-2">
                                                 <h5><?php echo "₹" . $data['price']; ?></h5>
-                                                <h6 class="text-muted ml-2"><del>9000</del></h6>
+                                                <h6 class="text-muted ml-2"><del>4500</del></h6>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center mb-1">
                                                 <small class="fa fa-star text-primary mr-1"></small>
@@ -119,10 +160,13 @@ include_once 'includes/navbar.php';
                                     </div>
                                 </div>
                         <?php
+
                             }
                         } else {
                             echo "No records available";
                         }
+
+
                         ?>
                     </div> <!-- End of Row -->
                 </div> <!-- End of Container -->
