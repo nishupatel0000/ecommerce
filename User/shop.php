@@ -75,8 +75,8 @@ if (isset($_GET['category_id'])) {
                         </div>
                     </div>
                 </div>
-                <div class="container">
-                    <div class="row"> <!-- Row to hold all products -->
+                <div class="container" id="price_data">
+                    <div class="row" > <!-- Row to hold all products -->
                         <?php
                         // $category_select = "SELECT * FROM product  JOIN categories  ON product.cat_id = categories.id WHERE categories.category_name = '$category_name'";
                         $category_select = "select * from product";
@@ -105,7 +105,7 @@ if (isset($_GET['category_id'])) {
                                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                                                 <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
                                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                                                <a class="btn btn-outline-dark btn-square" href="detail.php?id=<?php echo $data['product_id'];?>"><i class="fa fa-search"></i></a>
                                             </div>
                                         </div>
                                         <div class="text-center py-4">
@@ -139,7 +139,7 @@ if (isset($_GET['category_id'])) {
 
 
 
-                <div class="col-12">
+                <div class="col-12" id="pagination">
                     <nav>
                         <ul class="pagination justify-content-center">
                             <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>

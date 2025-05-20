@@ -169,31 +169,18 @@
  </div>
 
  <script>
-     $(document).ready(function() {
+      $(document).ready(function() {
 
 
-         $(document).on("change", ".custom-control-input", function() {
-             let selectedPrices = [];
-             let selectedColors = [];
-             let selectedGenders = [];
+         $(document).on("change", ".price-checkbox", function(e) {
+             //  $(".custom-control-input").on("change", function(e) {
+             e.preventDefault();
+             let selectedValues = [];
 
-             // Get selected price ranges
+
              $(".price-checkbox:checked").each(function() {
-                 selectedPrices.push($(this).val());
+                 selectedValues.push($(this).val());
              });
-
-             // Get selected colors
-             $(".color-checkbox:checked").each(function() {
-                 selectedColors.push($(this).val());
-             });
-
-             // Get selected genders
-             $(".gender-checkbox:checked").each(function() {
-                 selectedGenders.push($(this).val());
-             });
-
-
-
 
 
 
@@ -202,10 +189,8 @@
                  type: "POST",
                  dataType: "json",
                  data: {
-                     action: "filter_display",
-                     prices: selectedPrices,
-                     colors: selectedColors,
-                     genders: selectedGenders
+                     action: "range_display",
+                     checkbox_value: selectedValues
                  },
 
                  success: function(data) {
@@ -282,81 +267,81 @@
 
      });
 
-     //      $(document).on("change", ".color-checkbox", function() {
+     $(document).on("change", ".color-checkbox", function() {
 
 
-     //          let selectedColors = [];
+         let selectedColors = [];
 
-     //          $(".color-checkbox:checked").each(function() {
-     //              selectedColors.push($(this).val());
-     //          });
-
-
-     //          $.ajax({
-     //              url: 'get_filter_data.php',
-     //              type: 'POST',
-     //              dataType: 'json',
-     //              data: {
-     //                  action: 'color_filter',
-     //                  colors: selectedColors
-     //              },
-     //              success: function(response) {
-     //                  if (response.code == 200) {
-     //                      console.log("Success result:", response.data);
-     //                      let output = '';
-     //                      response.data.forEach(function(product) {
-     //                          output += `
-     //                      <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
-     //                          <div class="product-item bg-light mb-4">
-     //                               <div class="product-img position-relative overflow-hidden">
-     //                             <img class="img-fluid w-100" style="max-height: 280px; object-fit: cover;" src="../Admin/assets/img/product/${product.image}" alt="">
-     //                             <div class="product-action">
-     //                                 <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
-     //                                 <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
-     //                                 <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
-     //                                 <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
-     //                             </div>
-     //                        </div>
-     //             <div class="text-center py-4">
-     //                     <a class="h6 text-decoration-none text-truncate" href="#">${product.name}</a>
-     //                     <div class="d-flex align-items-center justify-content-center mt-2">
-     //                         <h5>₹${product.price}</h5>
-     //                         <h6 class="text-muted ml-2"><del>₹4500</del></h6>
-     //                     </div>
-     //                     <div class="d-flex align-items-center justify-content-center mb-1">
-     //                         <small class="fa fa-star text-primary mr-1"></small>
-     //                         <small class="fa fa-star text-primary mr-1"></small>
-     //                         <small class="fa fa-star text-primary mr-1"></small>
-     //                         <small class="fa fa-star text-primary mr-1"></small>
-     //                         <small class="fa fa-star text-primary mr-1"></small>
-     //                         <small>(99)</small>
-     //                     </div>
-     //                   </div>
-     //               </div>
-     //              </div>`;
-     //                      });
-
-     //                      $('#price_data .row').html(output);
+         $(".color-checkbox:checked").each(function() {
+             selectedColors.push($(this).val());
+         });
 
 
-     //                      //  alert(data.data);
-     //                  } else {
-     //                      $('#pagination').hide();
-     //                      $('#price_data .row').html(`
-     //     <div class="no-results text-center p-4">
-     //         <img src="images/no-results.png" alt="No Results" style="max-width: 200px;">
-     //         <h4>No products found</h4>
-     //         <p>Try changing the filters or resetting them.</p>
-     //     </div>
-     // `);
-     //                  }
-     //              }
-     //          });
+         $.ajax({
+             url: 'get_filter_data.php',
+             type: 'POST',
+             dataType: 'json',
+             data: {
+                 action: 'color_filter',
+                 colors: selectedColors
+             },
+             success: function(response) {
+                 if (response.code == 200) {
+                     console.log("Success result:", response.data);
+                     let output = '';
+                     response.data.forEach(function(product) {
+                         output += `
+                     <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+                         <div class="product-item bg-light mb-4">
+                              <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" style="max-height: 280px; object-fit: cover;" src="../Admin/assets/img/product/${product.image}" alt="">
+                            <div class="product-action">
+                                <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                            </div>
+                       </div>
+            <div class="text-center py-4">
+                    <a class="h6 text-decoration-none text-truncate" href="#">${product.name}</a>
+                    <div class="d-flex align-items-center justify-content-center mt-2">
+                        <h5>₹${product.price}</h5>
+                        <h6 class="text-muted ml-2"><del>₹4500</del></h6>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center mb-1">
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small>(99)</small>
+                    </div>
+                  </div>
+              </div>
+             </div>`;
+                     });
+
+                     $('#price_data .row').html(output);
+
+
+                     //  alert(data.data);
+                 } else {
+                     $('#pagination').hide();
+                     $('#price_data .row').html(`
+    <div class="no-results text-center p-4">
+        <img src="images/no-results.png" alt="No Results" style="max-width: 200px;">
+        <h4>No products found</h4>
+        <p>Try changing the filters or resetting them.</p>
+    </div>
+`);
+                 }
+             }
+         });
 
 
 
-     //          // 
-     //      });
+         // 
+     });
 
 
      $(document).on("change", ".gender-checkbox", function(e) {
@@ -379,7 +364,7 @@
              },
 
              success: function(data) {
-                 if (data.code == 200) {
+                        if (data.code == 200) {
                      console.log("Success result:", data.data);
                      let output = '';
                      data.data.forEach(function(product) {
