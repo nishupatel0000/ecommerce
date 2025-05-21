@@ -10,10 +10,12 @@ include_once 'includes/navbar.php';
 if (isset($_GET['category_id'])) {
     $category_name = $_GET['category_name'];
     $category_id = $_GET['category_id'];
-} else {
+} elseif (isset($_GET['men_cloth']) || isset($_GET['women_cloth']) || isset($_GET['baby_cloth'])) {
+    // echo "hii";
+    $men_cloth = isset($_GET['men_cloth']);
+    $women_cloth = isset($_GET['women_cloth']);
+    $baby_cloth = isset($_GET['baby_cloth']);
 }
-
-
 
 
 
@@ -76,13 +78,29 @@ if (isset($_GET['category_id'])) {
                     </div>
                 </div>
                 <div class="container" id="price_data">
-                    <div class="row" > <!-- Row to hold all products -->
+                    <div class="row"> <!-- Row to hold all products -->
                         <?php
                         // $category_select = "SELECT * FROM product  JOIN categories  ON product.cat_id = categories.id WHERE categories.category_name = '$category_name'";
                         $category_select = "select * from product";
 
                         if (isset($_GET['category_id'])) {
                             $category_select .= " WHERE product.cat_id = " . (int)$_GET['category_id'];
+                        }
+
+                        if (isset($_GET['men_cloth'])) {
+                            $category_id = (int)$_GET['men_cloth'];
+                            $category_select .= " JOIN categories ON product.cat_id = categories.id WHERE product.gender = 'male' AND categories.id = $category_id";
+                        }
+
+                        if (isset($_GET['women_cloth'])) {
+                            $category_id = (int)$_GET['women_cloth'];
+                            $category_select .= " JOIN categories ON product.cat_id = categories.id WHERE product.gender = 'female' AND categories.id = $category_id";
+                        }
+
+
+                        if (isset($_GET['baby_cloth'])) {
+                            $category_id = (int)$_GET['baby_cloth'];
+                            $category_select .= " JOIN categories ON product.cat_id = categories.id WHERE product.gender = 'baby' AND categories.id = $category_id";
                         }
 
 
@@ -103,9 +121,8 @@ if (isset($_GET['category_id'])) {
                                             <img class="img-fluid w-100" style="max-height: 280px; object-fit: cover;" src="../Admin/assets/img/product/<?php echo $data['image']; ?>" alt="">
                                             <div class="product-action">
                                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                                <a class="btn btn-outline-dark btn-square" href="detail.php?id=<?php echo $data['product_id'];?>"><i class="fa fa-search"></i></a>
+                                                <a class="btn btn-outline-dark btn-square" href="javascript:void(0)"><i class="far fa-heart" id="wishlist"></i></a>
+                                                <a class="btn btn-outline-dark btn-square" href="detail.php?id=<?php echo $data['product_id']; ?>"><i class="fa fa-search"></i></a>
                                             </div>
                                         </div>
                                         <div class="text-center py-4">
@@ -156,7 +173,16 @@ if (isset($_GET['category_id'])) {
     </div>
 </div>
 <!-- Shop End -->
+<script>
+    $(document).ready(function() {
 
+        $("#wishlist").click(function(e) {
+            e.preventDefault();
+
+
+        })
+    })
+</script>
 
 <!-- Footer Start -->
 <?php

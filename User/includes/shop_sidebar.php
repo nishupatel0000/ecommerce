@@ -4,15 +4,19 @@
     $row = $result->fetch_assoc();
 
     $min_price = (int)$row['min_price'];
+    // echo $min_price;
     $max_price = (int)$row['max_price'];
     $count = $row['count_products'];
 
-    $range_count = 5; // Default 5 ranges
+    $range_count = 7; 
+  
     $range_span = $max_price - $min_price;
+      
 
     // Step 2: Calculate step size
     $step = ceil($range_span / $range_count);
-
+ 
+   
     // Optional: round step to nearest 50 or 100 for cleaner UX
     function roundToNiceStep($value)
     {
@@ -38,12 +42,15 @@
     $result = $con_query->query($sql);
     $row = $result->fetch_assoc();
     $more_count = (int)$row['more_count'];
+    // echo $more_count;
+    // die();
 
 
     if ($more_count > 0 && $more_count <= 10) {
+        // echo "in";
         $ranges[] = ['from' => $check_from + 1, 'to' => null]; // 6th range: "more"
     } elseif ($more_count > 10) {
-
+    ;
         $step += 50;
         $ranges = [];
         for ($i = 0; $i < $range_count; $i++) {
@@ -75,10 +82,12 @@
              <!-- Dynamically Generated Price Ranges -->
              <?php
                 foreach ($ranges as $range) {
+                    // print_r($ranges);
+                    
                     if ($range['to'] === null) {
                         $label = $range['from'] . "+";
-                        $value = $range['from'] . "-more";
-                        $sql = "SELECT COUNT(*) AS cnt FROM product WHERE price > {$range['from']}";
+                        $value = $range['from'] . "";
+                        $sql = "SELECT COUNT(*) AS cnt FROM product WHERE price >= {$range['from']}";
                     } else {
                         $label = "{$range['from']} - {$range['to']}";
                         $value = "{$range['from']}-{$range['to']}";
@@ -177,7 +186,7 @@
              let selectedColors = [];
              let selectedGenders = [];
 
-             // Get selected price ranges
+             
              $(".price-checkbox:checked").each(function() {
                  selectedPrices.push($(this).val());
              });
@@ -223,8 +232,7 @@
                             <div class="product-action">
                                 <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="detail.php?id= ${product.product_id}"><i class="fa fa-search"></i></a>
                             </div>
                        </div>
             <div class="text-center py-4">

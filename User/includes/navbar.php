@@ -21,11 +21,11 @@
                         ?>
                           <div class="nav-item dropdown dropright">
                               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><?php echo $data['category_name'];?><i class="fa fa-angle-right float-right mt-1"></i></a>
-                              <!-- <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
-                                <a href="" class="dropdown-item">Men's Dresses</a>
-                                <a href="" class="dropdown-item">Women's Dresses</a>
-                                <a href="" class="dropdown-item">Baby's Dresses</a>
-                            </div> -->
+                              <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
+                                <a href="shop.php?men_cloth=<?php echo $data['id'] ?>" class="dropdown-item">Men's <?php echo $data['category_name'];?></a>
+                                <a href="shop.php?women_cloth=<?php echo $data['id'] ?>" class="dropdown-item">Women's <?php echo $data['category_name'];?></a>
+                                <a href="shop.php?baby_cloth=<?php echo $data['id'] ?>" class="dropdown-item">Baby's <?php echo $data['category_name'];?></a>
+                            </div>
                           </div>
                           <!-- <a href="" class="nav-item nav-link">Shirts</a>
                         <a href="" class="nav-item nav-link">Jeans</a>
