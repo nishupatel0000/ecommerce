@@ -14,10 +14,10 @@
      <!--begin::Brand Link-->
      <a href="./index.html" class="brand-link">
        <!--begin::Brand Image-->
-       <img
+       <!-- <img
          src="assets/img/loggo.png"
          alt="AdminLTE Logo"
-         class="brand-image opacity-75 shadow" />
+         class="brand-image opacity-75 shadow" /> -->
        <!--end::Brand Image-->
        <!--begin::Brand Text-->
        <!--end::Brand Text-->
@@ -71,24 +71,10 @@
                  <p>Product</p>
                </a>
              </li>
-             <li class="nav-item">
-               <a href="chef_info.php" class="nav-link <?= ($current_page == 'chef_info.php') ? 'li-active' : '' ?>">
-                 <i class="nav-icon bi bi-person"></i>
-                 <p>Chefs</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="testimonial.php" class="nav-link <?= ($current_page == 'testimonial.php') ? 'li-active' : '' ?>">
-                 <i class="nav-icon bi bi-chat"></i>
-                 <p>Testimonial</p>
-               </a>
-             </li>
-                  <li class="nav-item">
-               <a href="booking_inquiry.php" class="nav-link <?= ($current_page == 'booking_inquiry.php') ? 'li-active' : '' ?>">
-                 <i class="nav-icon bi bi-bell"></i>
-                 <p>Booking Inquiry</p>
-               </a>
-             </li>
+            
+            
+                 
+            
              <li class="nav-item has-treeview menu-open">
                <a href="#" class="nav-link  ">
                  <i class="nav-icon bi bi-book"></i>
@@ -99,51 +85,13 @@
                  </p>
                </a>
                <ul class="nav nav-treeview" style="display: block;">
-                 <li class="nav-item">
-               <a href="about_home.php" class="nav-link <?= ($current_page == 'about_home.php') ? 'li-active' : '' ?>">
+                 
+                 
+                 
 
-                   <!-- <a href="about_home.php" class="nav-link"> -->
-                     <i class="nav-icon fa fa-list-alt"></i>
-                     <p>About Home</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-               <a href="banner.php" class="nav-link <?= ($current_page == 'banner.php') ? 'li-active' : '' ?>">
-
-                     <i class="nav-iconfas fa fa-bullhorn"></i>
-                     <p>Banner</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                  <a href="contact_us.php" class="nav-link <?= ($current_page == 'contact_us.php') ? 'li-active' : '' ?>">
- 
-                     <i class="nav-iconfas bi bi-phone"></i>
-                     <p>Contact Us</p>
-                   </a>
-                 </li>
-
-                 <li class="nav-item">
-                  <a href="gallery.php" class="nav-link <?= ($current_page == 'gallery.php') ? 'li-active' : '' ?>">
-
-              
-                     <i class="nav-iconfas bi  bi-image"></i>
-                     <p>Gallery</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                  <a href="event.php" class="nav-link <?= ($current_page == 'event.php') ? 'li-active' : '' ?>">
- 
-                     <i class="nav-iconfas fas fa-glass-cheers"></i>
-                     <p>Event</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                  <a href="privacy.php" class="nav-link <?= ($current_page == 'privacy.php') ? 'li-active' : '' ?>">
-
-                     <i class="nav-iconfas fas fa-file-contract"></i>
-                     <p>Privacy</p>
-                   </a>
-                 </li>
+                 
+                
+                 
                </ul>
              </li>
 

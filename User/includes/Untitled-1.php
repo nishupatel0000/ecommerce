@@ -11,7 +11,7 @@
 
 
 
-
+$loginRequired = !isset($_SESSION['user_id']);
 
 
 $pageTitle = "Products - Shop the Latest Fashion & Deals";
@@ -45,7 +45,8 @@ if (isset($_GET['category_id'])) {
     <div class="row px-xl-5">
         <div class="col-12">
             <nav class="breadcrumb bg-light mb-30">
-                <a class="breadcrumb-item text-dark" href="index.php">Home</a>
+                <a class="breadcrumb-item text-dark" href="#">Home</a>
+                <a class="breadcrumb-item text-dark" href="#">Shop</a>
                 <span class="breadcrumb-item active">Shop List</span>
             </nav>
         </div>
@@ -123,42 +124,21 @@ if (isset($_GET['category_id'])) {
                         $result_select = mysqli_query($con_query, $category_select);
                         $row = mysqli_num_rows($result_select);
 
-                        $userWishlist = [];
                         if ($rows = mysqli_num_rows($result_select) > 0) {
 
                             while ($data = mysqli_fetch_assoc($result_select)) {
-                                if (isset($_SESSION['user_id'])) {
-                                    $user_id = $_SESSION['user_id'];
-                                    $products_id = $data['product_id'];
-                                    $select_wishlist = "select p.product_id from product as p join wishlist on p.wishlist_id = wishlist.id where wishlist.user_id = '$user_id'";
-                                    $result_wishlist = mysqli_query($con_query, $select_wishlist);
-                                    // if($rows=mysqli_num_rows($result_wishlist)){
-                                    while ($row = mysqli_fetch_assoc($result_wishlist)) {
-                                        $userWishlist[] = $row['product_id'];
-                                  
-
-                                    }
-
-                                    // }
-
-                                }
 
                         ?>
                                 <!-- Product Item -->
                                 <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
                                     <div class="product-item bg-light mb-4">
                                         <div class="product-img position-relative overflow-hidden">
-                                            <div id="wishlistToast" class="custom-toast"></div>
+                                                    <div id="wishlistToast" class="custom-toast"></div>
                                             <img class="img-fluid w-100" style="max-height: 280px; object-fit: cover;" src="../Admin/assets/img/product/<?php echo $data['image']; ?>" alt="">
                                             <div class="product-action">
                                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                                                 <a class="btn btn-outline-dark btn-square" href="javascript:void(0)">
-                                                    <?php
-                                                    $isInWishlist = in_array($data['product_id'], $userWishlist);
-                                                 
-                                               
-                                                    ?>
-                                                    <i class="fa-heart wishlist-icon <?php echo $isInWishlist ? 'fas text-danger' : 'far'; ?>" data-product-id="<?php echo $data['product_id']; ?>"></i>
+                                                    <i class="far fa-heart wishlist-icon" data-product-id="<?php echo $data['product_id']; ?>"></i>
                                                 </a>
                                                 <a class="btn btn-outline-dark btn-square" href="detail.php?id=<?php echo $data['product_id']; ?>"><i class="fa fa-search"></i></a>
                                             </div>
@@ -177,7 +157,7 @@ if (isset($_GET['category_id'])) {
                                                 <small class="fa fa-star text-primary mr-1"></small>
                                                 <small>(99)</small>
                                             </div>
-
+                                    
 
                                         </div>
                                     </div>
@@ -191,7 +171,6 @@ if (isset($_GET['category_id'])) {
 
 
                         ?>
-                        <div id="wishlistToast" class="custom-toast">Added to wishlist!</div>
                     </div> <!-- End of Row -->
                 </div> <!-- End of Container -->
 
@@ -232,9 +211,9 @@ if (isset($_GET['category_id'])) {
             success: function(data) {
 
                 if (data.code == 200) {
-                    showWishlistMessage(data.msg);
-                } else if (data.code == 404) {
-                    showWishlistMessage(data.msg);
+                    // showWishlistMessage(data.msg);
+
+
                 } else {
                     document.getElementById("authModal").style.display = "flex";
                 }
@@ -244,7 +223,6 @@ if (isset($_GET['category_id'])) {
 
     });
 
-
     function showWishlistMessage(msg = "Added to wishlist!") {
         const toast = document.getElementById("wishlistToast");
         toast.innerText = msg;
@@ -252,7 +230,7 @@ if (isset($_GET['category_id'])) {
 
         setTimeout(() => {
             toast.style.display = "none";
-        }, 2500);
+        }, 2500); // Hide after 2.5 seconds
     }
 </script>
 <!-- Footer Start -->

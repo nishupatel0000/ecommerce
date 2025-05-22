@@ -52,14 +52,14 @@ require_once '../common/config.php';
                 <div class="small-box text-bg-primary">
                   <div class="inner">
                     <?php
-                    $sel = "SELECT * FROM  categories";
+                    $sel = "SELECT * FROM  user";
                     $res = mysqli_query($con_query, $sel);
                     $count = mysqli_num_rows($res);
                        
                 
                       ?>
                     <h3><?php print_r($count);?></h3>
-                    <p>Total category</p>
+                    <p>Total user</p>
                   </div>
                   <svg
                     class="small-box-icon"
@@ -82,7 +82,7 @@ require_once '../common/config.php';
                 <div class="small-box text-bg-success">
                   <div class="inner">
                     <?php
-                  $sel_type = "select  * FROM product";  
+                  $sel_type = "select  * FROM categories";  
                   $res_cars = mysqli_query($con_query, $sel_type);
                   $all = mysqli_num_rows($res_cars);
                   
@@ -91,7 +91,7 @@ require_once '../common/config.php';
                      
                    ?>
                     <h3> <?php echo $all;?></h3>
-                    <p >Total Product</p>
+                    <p >Total categories</p>
                   </div>
                   <svg
                     class="small-box-icon"

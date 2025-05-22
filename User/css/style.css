@@ -9887,11 +9887,38 @@ button[type="submit"]:hover {
 }
 
 .right-box a {
-  color: #FFD333; /* Theme yellow for links */
+  color: #1980c5; /* Theme yellow for links */
   text-decoration: none;
   font-weight: bold;
 }
  
 body.modal-open {
   overflow: hidden;
+}
+.error-msg {
+  color: #ff6161;
+}
+ 
+ 
+ 
+ 
+.custom-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+        background-color: #ff4d4f;
+   color: #fff;
+    padding: 12px 20px;
+    border-radius: 5px;
+    z-index: 9999;
+    display: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 2.5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-10px); }
 }

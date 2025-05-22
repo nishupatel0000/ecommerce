@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once '../common/config.php';
 
 
@@ -148,7 +149,7 @@ if (isset($_POST['action']) && $_POST['action'] == "gender_range") {
 
 
 if ($_POST['action'] == "user_register") {
- 
+
 
     if (empty($_POST['name'])) {
         $error['name'] = ' * name is required';
@@ -177,7 +178,7 @@ if ($_POST['action'] == "user_register") {
         $error['password'] = ' * password is required';
     } else {
 
-        $password = $_POST['password'];
+        $password = md5($_POST['password']);
     }
 
 
@@ -208,14 +209,14 @@ if ($_POST['action'] == "user_register") {
         }
     }
 
-      if (empty($_POST['device_type'])) {
+    if (empty($_POST['device_type'])) {
         $error['device_type'] = ' * device type  is required';
     } else {
 
         $device_type = $_POST['device_type'];
     }
 
-         if (empty($_POST['device_token'])) {
+    if (empty($_POST['device_token'])) {
         $error['device_token'] = ' * device token  is required';
     } else {
 
@@ -232,12 +233,12 @@ if ($_POST['action'] == "user_register") {
         return false;
     } else {
 
-        $insert_category = "insert into user(name,mobile,email,password,image,device_type,device_token)values('$name', '$email','$mobile_number','$password','$newFileName','$device_type','$device_token')";
+        $insert_category = "insert into user(name,mobile,email,password,image,device_type,device_token)values('$name','$mobile_number', '$email','$password','$newFileName','$device_type','$device_token')";
         $result_category = mysqli_query($con_query, $insert_category);
-         
+
 
         if ($result_category) {
-            
+
             move_uploaded_file($fileTmpPath, $destPath);
 
             $data = [
@@ -252,7 +253,7 @@ if ($_POST['action'] == "user_register") {
 
 
 
-if ($_POST['action'] == "admin_login") {
+if ($_POST['action'] == "user_login") {
 
 
     if (empty($_POST['email'])) {
@@ -264,8 +265,6 @@ if ($_POST['action'] == "admin_login") {
         $error['password'] = "* password is required";
     } else {
         $password = md5($_POST['password']);
-         
-     
     }
 
     if (!empty($error)) {
@@ -277,30 +276,26 @@ if ($_POST['action'] == "admin_login") {
         return false;
     }
     $sel_data = "select * from user where email= '$email'";
-    print_r($sel_data);
+
     // die();
     $res = mysqli_query($con_query, $sel_data);
     if (mysqli_num_rows($res) > 0) {
-     
+
 
         $data = mysqli_fetch_assoc($res);
+
         $old_email = $data['email'];
         $old_password =  $data['password'];
-        echo $old_password;
-        echo $old_email."<br>";
-        echo $password;
-        echo $email;
         $_SESSION['email'] = $data['email'];
-         if($password == $old_password){
-            echo "same";
-            die();
-         }
+
 
         if ($email == $old_email &&  $password == $old_password) {
-             
-        // if ($email == $old_email && $password == $old_password) {
+
+            // if ($email == $old_email && $password == $old_password) {
 
             $_SESSION['user_id'] = $data['id'];
+            $_SESSION['name'] = $data['name'];
+
 
             $result = [
                 "code" => 200,
@@ -320,4 +315,57 @@ if ($_POST['action'] == "admin_login") {
 
     echo json_encode($allerror);
     return false;
+}
+
+
+if ($_POST['action'] == "wishlist") {
+    // echo "in",
+    // die();
+    if (!isset($_SESSION['user_id'])) {
+
+        $err = [
+            "code" => 403,
+            "err" => "user is not logged in"
+        ];
+        echo json_encode($err);
+        return false;
+        //     // header("location:admin_info.php");
+
+    } else {
+
+        $user_id = $_SESSION['user_id'];
+        $product_id = $_POST['product_id'];
+
+
+        $select_wishlist = "select * from wishlist where user_id = '$user_id' and product_id ='$product_id'";
+        $result_wishlist = mysqli_query($con_query, $select_wishlist);
+
+        if (mysqli_num_rows($result_wishlist) > 0) {
+            $error = [
+                "code" => 404,
+                "msg" => "This item is already in your wishlist!",
+
+            ];
+            echo json_encode($error);
+            return false;
+        } else {
+
+            $insert_wishlist = "insert into wishlist(user_id,product_id)values('$user_id','$product_id')";
+            $result_wishlist = mysqli_query($con_query, $insert_wishlist);
+            if ($result_wishlist) {
+
+
+                $result = [
+                    "code" => 200,
+                    "msg" => "Added to wishlist!",
+                    "id" =>  $user_id
+                ];
+                echo json_encode($result);
+                return true;
+            } else {
+                echo json_encode("insert error");
+                return false;
+            }
+        }
+    }
 }
