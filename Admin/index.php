@@ -10,6 +10,14 @@ if (isset($_SESSION['logout_msg'])): ?>
   </script>
   <?php unset($_SESSION['logout_msg']); ?>
 <?php endif; ?>
+ 
+ <?php
+$toast = '';
+if (isset($_SESSION['toast'])) {
+    $toast = $_SESSION['toast'];
+    unset($_SESSION['toast']);
+}
+?>
 
 
 
@@ -343,9 +351,60 @@ if (isset($_SESSION['logout_msg'])): ?>
       toast.show();
     }
   </script>
+
+  <?php if ($toast != '') { ?>
+  <div id="toast" class="toast"><?php echo $toast; ?></div>
+  <script>
+    window.onload = function () {
+      var toast = document.getElementById("toast");
+      toast.classList.add("show");
+      setTimeout(function () {
+        toast.classList.remove("show");
+      }, 3000);
+    };
+  </script>
+  <style>
+   .toast {
+  visibility: hidden;
+  min-width: 300px;
+  background-color: #4BB543;
+  color: #fff;
+  text-align: left;
+  border-radius: 8px;
+  padding: 16px 20px;
+  position: fixed;
+  z-index: 9999;
+  top: 20px;
+  right: 20px;
+  font-size: 16px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  animation: fadein 0.5s, fadeout 0.5s 3s;
+}
+
+.toast.show {
+  visibility: visible;
+}
+
+@keyframes fadein {
+  from { opacity: 0; top: 0; }
+  to { opacity: 1; top: 20px; }
+}
+
+@keyframes fadeout {
+  from { opacity: 1; top: 20px; }
+  to { opacity: 0; top: 0; }
+}
+
+  </style>
+<?php } ?>
+
   <!--end::OverlayScrollbars Configure-->
   <!--end::Script-->
 </body>
 <!--end::Body-->
 
 </html>
+</php 
+session_unset();
+session_destroy();
+?>

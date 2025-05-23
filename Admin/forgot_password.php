@@ -1,12 +1,17 @@
 <?php
-require 'PHPMailer/PHPMailer.php';
-require 'phpmailer/SMTP.php';
-require 'phpmailer/Exception.php';
+session_start();
 
- 
+$message = '';
+if (isset($_SESSION['email'])) {
+    $message = $_SESSION['email'];
+    unset($_SESSION['email']);
+}
 
-
+// if(!isset($_SESSION['user_id'])){
+//     header("location:index.php");
+// }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,6 +71,14 @@ require 'phpmailer/Exception.php';
             color: #385185;
             font-weight: 500;
         }
+
+        .message {
+            margin-top: 12px;
+            text-align: left;
+            font-size:17px;
+            color: #d93025;
+            /* Optional: red for errors */
+        }
     </style>
 </head>
 
@@ -74,9 +87,12 @@ require 'phpmailer/Exception.php';
     <div class="container">
         <h2>Trouble logging in?</h2>
         <p>Enter your email and we'll send you a link to get back into your account.</p>
-        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST">
-            <input type="email" name="email" placeholder="Email address" required>
-            <button type="submit">Send Login Link</button>
+        <form action="verify-password.php" method="POST">
+            <input type="email" name="email" placeholder="Email address">
+            <div class="message">
+                <?php echo $message; ?>
+            </div>
+            <button type="submit" name="submit">Send Login Link</button>
         </form>
         <a href="index.php" class="back-login">Back to Login</a>
     </div>
@@ -85,30 +101,7 @@ require 'phpmailer/Exception.php';
 
 </html>
 <?php
-// Load PHPMailer classes manually (core PHP way)
+session_unset();
+session_destroy();
 
-
-try {
-    // SMTP configuration
-    $phpmailer = new PHPMailer();
-    $phpmailer->isSMTP();
-    $phpmailer->Host = 'sandbox.smtp.mailtrap.io';
-    $phpmailer->SMTPAuth = true;
-    $phpmailer->Port = 2525;
-    $phpmailer->Username = 'ccba3e48b9b6b6';
-    $phpmailer->Password = '****3b5c';
-
-    // Sender and recipient
-    $mail->setFrom('noreply@example.com', 'My Website');
-    $mail->addAddress($_POST['email'], 'User');
-
-    // Email content
-    $mail->isHTML(true);
-    $mail->Subject = 'Reset Your Password';
-    $mail->Body    = 'Click this link to reset your password: <a href="https://yourwebsite.com/reset.php?token=abc123">Reset Password</a>';
-
-    $mail->send();
-    echo 'Email sent successfully!';
-} catch (Exception $e) {
-    echo "Email could not be sent. Mailer Error: {$mail->ErrorInfo}";
-}
+?>

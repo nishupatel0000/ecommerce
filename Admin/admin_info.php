@@ -72,14 +72,15 @@ $data = mysqli_fetch_assoc($result_data);
                 <!-- Left Column: Username and Email -->
                 <div class="col-md-6">
                   <div class="mb-3">
-                    <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
                     <input type="hidden" name="old_id" id="old_id" value="<?php echo  $data['id'];?>">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" value="<?php echo $data['username']; ?>">
-                  </div>
-                  <div class="mb-3">
+                    <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" value="<?php echo $data['id']; ?>">
+                 
+                   <div class="mb-3">
                     <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                     <input type="email" class="form-control" id="user_email" name="user_email" placeholder="Enter email" value="<?php echo $data['email']; ?>">
-                  </div>
+                  </div> </div>
+                
                 </div>
 
                 <!-- Right Column: Password Fields -->

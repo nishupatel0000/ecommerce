@@ -263,7 +263,7 @@ require_once 'includes/aside.php';
                 <td id="mytd">
                   <a href=""> <button class="btn btn-primary edit" data-id="<?php echo $row['product_id']; ?>" data-bs-toggle="modal" data-bs-target="#edit_product"> <i class="fa fa-edit"></i></button></a>
 
-                  <a href="javascript:void(0)"><button class="btn btn-danger delete_btn   " data-id="<?php echo $row['product_id']; ?>"><i class="fa fa-trash"></i></button></a>
+                  <a href="javascript:void(0)"><button class="btn btn-danger delete_btn" data-id="<?php echo $row['product_id']; ?>"><i class="fa fa-trash"></i></button></a>
                 </td>
               </tr>
             <?php
@@ -367,7 +367,7 @@ require_once 'includes/aside.php';
     });
 
 
-    $(".delete_btn").click(function(e) {
+$('#myTable1').on('click', '.delete_btn', function(e) {
       e.preventDefault();
       var id = $(this).data("id");
       Swal.fire({
@@ -399,7 +399,7 @@ require_once 'includes/aside.php';
 
     });
 
-    $(".edit").click(function(e) {
+  $('#myTable1').on('click', '.edit', function(e) {
       e.preventDefault();
       var id = $(this).data("id");
       $.ajax({

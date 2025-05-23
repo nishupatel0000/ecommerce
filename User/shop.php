@@ -135,8 +135,6 @@ if (isset($_GET['category_id'])) {
                                     // if($rows=mysqli_num_rows($result_wishlist)){
                                     while ($row = mysqli_fetch_assoc($result_wishlist)) {
                                         $userWishlist[] = $row['product_id'];
-                                  
-
                                     }
 
                                     // }
@@ -151,12 +149,12 @@ if (isset($_GET['category_id'])) {
                                             <div id="wishlistToast" class="custom-toast"></div>
                                             <img class="img-fluid w-100" style="max-height: 280px; object-fit: cover;" src="../Admin/assets/img/product/<?php echo $data['image']; ?>" alt="">
                                             <div class="product-action">
-                                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                                                <a class="btn btn-outline-dark btn-square" href="javascript:void(0)"><i class="fa fa-shopping-cart shopping-cart" data-product-id="<?php echo $data['product_id']; ?>"></i></a>
                                                 <a class="btn btn-outline-dark btn-square" href="javascript:void(0)">
                                                     <?php
                                                     $isInWishlist = in_array($data['product_id'], $userWishlist);
-                                                 
-                                               
+
+
                                                     ?>
                                                     <i class="fa-heart wishlist-icon <?php echo $isInWishlist ? 'fas text-danger' : 'far'; ?>" data-product-id="<?php echo $data['product_id']; ?>"></i>
                                                 </a>
@@ -217,15 +215,17 @@ if (isset($_GET['category_id'])) {
 <script>
     $(document).on("click", ".wishlist-icon", function() {
 
+        $(this).toggleClass('fas text-danger far');
 
         var product_id = $(this).data("product-id");
+        const isAdding = $(this).hasClass('fas');
         // alert("Product ID: " + product_id);
         $.ajax({
             url: "get_filter_data.php",
             type: "POST",
             dataType: "json",
             data: {
-                action: "wishlist",
+                action: isAdding ? "wishlist" : "remove",
                 product_id: product_id,
 
             },
@@ -254,6 +254,31 @@ if (isset($_GET['category_id'])) {
             toast.style.display = "none";
         }, 2500);
     }
+
+
+    $(document).on("click", ".shopping-cart", function(e) {
+        e.preventDefault();
+        var productId = $(this).data('product-id');
+        $.ajax({
+            url: 'get_filter_data.php',
+            type: 'POST',
+            dataType: "JSON",
+            data: {
+                action: "add_cart",
+                product_id: productId
+            },
+            success: function(response) {
+                if (data.code == 200) {
+                    showWishlistMessage(data.msg);
+                } else if (data.satus == 404) {
+                    alert("hrllo");
+                    showWishlistMessage(data);
+                } else {
+                    document.getElementById("authModal").style.display = "flex";
+                }
+            }
+        });
+    });
 </script>
 <!-- Footer Start -->
 <?php
