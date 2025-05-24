@@ -122,7 +122,9 @@ include_once 'includes/navbar.php';
     <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Categories</span></h2>
     <div class="row px-xl-5 pb-3">
         <?php
-        $category_select = "select * from categories";
+        $category_select = "select  * from categories";
+        // $category_select = "select  count(p.product_id),c.* from  product as p join  categories as c on p.cat_id = c.id";
+
         $result_select = mysqli_query($con_query, $category_select);
         if (mysqli_num_rows($result_select) > 0) {
             while ($data = mysqli_fetch_assoc($result_select)) {
@@ -145,18 +147,26 @@ include_once 'includes/navbar.php';
 
                                  
                                 $result_product = mysqli_query($con_query, $select_product);
-
+                                   
                                  
                                 if ($result_product) {
-                                    $row = mysqli_fetch_assoc($result_product);
-                                    $all = $row['total_products'];    
+
+                                     
+                                    $data = mysqli_fetch_assoc($result_product);
+
+                                    $all = $data['total_products'];    
                                 } else {
                                     $all = 0;   
                                 }
+                                if ($all > 0) {
+                                    echo '<small class="text-body">' . $all . '</small>';
+                                }
+                                else{
+                                    echo '<small class="text-body">' . "No Products available" . '</small>';
+                                    
+                                }
                                 ?>
-
                                  
-                                <small class="text-body"><?php echo $all; ?></small>
 
                             </div>
                         </div>

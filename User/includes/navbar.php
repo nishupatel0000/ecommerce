@@ -1,5 +1,7 @@
   <?php
-    include_once '../common/config.php'; ?>
+    include_once '../common/config.php'; 
+ ?>
+ 
 
   <div class="container-fluid bg-dark mb-30">
       <div class="row px-xl-5">
@@ -17,17 +19,17 @@
                         $category_select = "select * from categories";
                         $result_select = mysqli_query($con_query, $category_select);
                         if (mysqli_num_rows($result_select) > 0) {
-                           while($data = mysqli_fetch_assoc($result_select)){
+                            while ($data = mysqli_fetch_assoc($result_select)) {
                         ?>
-                          <div class="nav-item dropdown dropright">
-                              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><?php echo $data['category_name'];?><i class="fa fa-angle-right float-right mt-1"></i></a>
-                              <!-- <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
-                                <a href="" class="dropdown-item">Men's Dresses</a>
-                                <a href="" class="dropdown-item">Women's Dresses</a>
-                                <a href="" class="dropdown-item">Baby's Dresses</a>
-                            </div> -->
-                          </div>
-                          <!-- <a href="" class="nav-item nav-link">Shirts</a>
+                              <div class="nav-item dropdown dropright">
+                                  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><?php echo $data['category_name']; ?><i class="fa fa-angle-right float-right mt-1"></i></a>
+                                  <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
+                                      <a href="shop.php?men_cloth=<?php echo $data['id'] ?>" class="dropdown-item">Men's <?php echo $data['category_name']; ?></a>
+                                      <a href="shop.php?women_cloth=<?php echo $data['id'] ?>" class="dropdown-item">Women's <?php echo $data['category_name']; ?></a>
+                                      <a href="shop.php?baby_cloth=<?php echo $data['id'] ?>" class="dropdown-item">Baby's <?php echo $data['category_name']; ?></a>
+                                  </div>
+                              </div>
+                              <!-- <a href="" class="nav-item nav-link">Shirts</a>
                         <a href="" class="nav-item nav-link">Jeans</a>
                         <a href="" class="nav-item nav-link">Swimwear</a>
                         <a href="" class="nav-item nav-link">Sleepwear</a>
@@ -38,7 +40,7 @@
                         <a href="" class="nav-item nav-link">Shoes</a> -->
 
                       <?php
-                           }
+                            }
                         }
                         ?>
                   </div>
@@ -57,7 +59,7 @@
                       <div class="navbar-nav mr-auto py-0">
                           <a href="index.php" class="nav-item nav-link active">Home</a>
                           <a href="shop.php" class="nav-item nav-link">Shop</a>
-                          <a href="detail.php" class="nav-item nav-link">Shop Detail</a>
+                          <!-- <a href="detail.php" class="nav-item nav-link">Shop Detail</a> -->
                           <div class="nav-item dropdown">
                               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i class="fa fa-angle-down mt-1"></i></a>
                               <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
@@ -68,10 +70,28 @@
                           <a href="contact.php" class="nav-item nav-link">Contact</a>
                       </div>
                       <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                          <a href="" class="btn px-0">
+                          <a href="wishlist.php" class="btn px-0">
                               <i class="fas fa-heart text-primary"></i>
-                              <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
+
+                              <?php
+                              $wishlistCount = 0;
+                                if (isset($_SESSION['user_id'])) {
+                                    
+                                    $id = $_SESSION['user_id'];
+                                    $category_select = "select count(id) as wishlist_id  from wishlist where user_id = '$id'";
+                                    $result_select = mysqli_query($con_query, $category_select);
+                                    $data = mysqli_fetch_assoc($result_select);
+                                 
+                                }
+                                
+                                ?>
+
+
+                              <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">
+                                  <?= isset($_SESSION['user_id']) ? $data['wishlist_id'] : 0 ?>
+                              </span>
                           </a>
+
                           <a href="" class="btn px-0 ml-3">
                               <i class="fas fa-shopping-cart text-primary"></i>
                               <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>

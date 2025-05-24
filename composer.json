@@ -1,0 +1,17 @@
+{
+    "name": "tc018/eshopping",
+    "autoload": {
+        "psr-4": {
+            "Tc018\\Eshopping\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "nishant",
+            "email": "nisupatel8200@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
+}
