@@ -40,7 +40,7 @@
                               <div class="profile-menu">
                                   <a href="/profile.php"><i class="fa fa-user"></i> My Profile</a>
                                   <a href="/orders.php"><i class="fa fa-box"></i> Orders</a>
-                                  <a href="/wishlist.php"><i class="fa fa-heart"></i> Wishlist</a>
+                                  <a href="../user/wishlist.php"><i class="fa fa-heart"></i> Wishlist</a>
                                   <!-- <a href="logout.php"><i class="fa fa-sign-out-alt"></i> Logout</a> -->
                                   <a href="#" id="logoutbtn" title="Logout">
                                       <i class="fa fa-sign-out-alt"></i> Logout

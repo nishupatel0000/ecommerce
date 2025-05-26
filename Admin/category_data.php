@@ -365,6 +365,8 @@ if ($_POST['action'] == "update_color_data") {
 
 
 if ($_POST['action'] == "product_insert") {
+  $status = $_POST['status'];
+ 
 
   if (empty($_POST['product_title'])) {
     $error['product_title'] = ' *Product Name is required';
@@ -456,7 +458,7 @@ if ($_POST['action'] == "product_insert") {
     echo json_encode($allerror);
     return false;
   } else {
-    $insert_product = "insert into product(name,description,image,price,additional_description,gender,cat_id,color_id)values('$product_title','$product_description','$newFileName','$product_price','$additional_description','$gender','$type','$color')";
+    $insert_product = "insert into product(name,description,image,price,additional_description,gender,cat_id,color_id,is_active)values('$product_title','$product_description','$newFileName','$product_price','$additional_description','$gender','$type','$color','$status')";
  
    
     $result_product = mysqli_query($con_query, $insert_product);
@@ -478,8 +480,10 @@ if ($_POST['action'] == "product_insert") {
 
 
 if ($_POST['action'] == "product_update") {
-
-
+  $active_status =  $_POST['edit_status'];
+ 
+ 
+  
   if (empty($_POST['edit_type'])) {
     $err['edit_type'] = "field is required";
   } else {
@@ -552,7 +556,10 @@ if ($_POST['action'] == "product_update") {
     if (file_exists($oldimage)) {
       unlink($oldimage);
     }
+
   }
+
+
 
   if (!empty($err)) {
     $allerrs = [
@@ -562,8 +569,10 @@ if ($_POST['action'] == "product_update") {
     echo json_encode($allerrs);
     return false;
   } else {
-    $update = "UPDATE product SET name='$product_edit_title',description='$product_edit_description',image='$newFileName',price='$price',additional_description='$edit_additional_description',gender='$gender',cat_id='$category_id',color_id='$color_id'  WHERE product_id ='$id'";
+    $update = "UPDATE product SET name='$product_edit_title',description='$product_edit_description',image='$newFileName',price='$price',additional_description='$edit_additional_description',gender='$gender',cat_id='$category_id',color_id='$color_id',is_active='$active_status'  WHERE product_id ='$id'";
+ 
     $result = mysqli_query($con_query, $update);
+ 
     if ($result) {
 
 

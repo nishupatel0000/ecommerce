@@ -124,6 +124,19 @@ require_once 'includes/aside.php';
                     <div id="gender_error" class="error"></div>
 
                   </div>
+
+
+                  <p>
+                    <label class="toggleSwitch xlarge" onclick="">
+                      <input type="checkbox" name="status" id="status" />
+                      <span style="margin-left: 5px;">
+                        <span>OFF</span>
+                        <span>ON</span>
+                        Status
+                      </span>
+                      <a></a>
+                    </label>
+                  </p>
                   <div class="modal-footer">
                     <input type="submit" class="btn btn-primary" name="submit" value="Add" id="add_product_btn">
                   </div>
@@ -189,8 +202,8 @@ require_once 'includes/aside.php';
                     <label for="des" class="form-label">Additional Description</label>
                     <textarea name="edit_additional_description" id="edit_additional_description" rows="18" cols="50" class="form-control" placeholder="Enter the content or description"></textarea>
                     <div id="edit_additional_description_error" class="error"></div>
-                    
-                      <label for="cat_title" class="form-label">Color</label>
+
+                    <label for="cat_title" class="form-label">Color</label>
                     <select name="edit_color" id="edit_color" class="form-control">
                       <option value="">Select color of product</option>
                       <?php
@@ -222,6 +235,21 @@ require_once 'includes/aside.php';
                     <div id="gender_edit_error" class="error"></div>
 
                   </div>
+      
+                  <label class="toggleSwitch xlarge">
+                    <input
+                      type="checkbox"
+                      name="edit_status"
+                      id="edit_status">
+                    <span style="margin-left: 5px;">
+                      <span>OFF</span>
+                      <span>ON</span>
+                      staus
+                    </span>
+                    <a></a>
+                  </label>
+
+
                 </div>
                 <div class="modal-footer">
                   <input type="submit" class="btn btn-primary" name="update" value="Update" id="update_product">
@@ -290,6 +318,7 @@ require_once 'includes/aside.php';
       let form = document.getElementById("product_add");
       let formdata = new FormData(form);
       formdata.append("action", "product_insert");
+      formdata.append("status", document.getElementById("status").checked ? 1 : 0);
       $.ajax({
 
         url: "category_data.php",
@@ -367,7 +396,7 @@ require_once 'includes/aside.php';
     });
 
 
-$('#myTable1').on('click', '.delete_btn', function(e) {
+    $('#myTable1').on('click', '.delete_btn', function(e) {
       e.preventDefault();
       var id = $(this).data("id");
       Swal.fire({
@@ -399,7 +428,7 @@ $('#myTable1').on('click', '.delete_btn', function(e) {
 
     });
 
-  $('#myTable1').on('click', '.edit', function(e) {
+    $('#myTable1').on('click', '.edit', function(e) {
       e.preventDefault();
       var id = $(this).data("id");
       $.ajax({
@@ -426,7 +455,10 @@ $('#myTable1').on('click', '.delete_btn', function(e) {
           $("#edit_additional_description").val(userDetails.additional_description);
           $('input[name="gender_edit"][value="' + genderValue + '"]').prop('checked', true);
           $("#edit_color").val(userDetails.color_id);
-         
+          $("#edit_status").prop("checked", userDetails.is_active == 1);
+
+
+
           // $("# Product_image").val(userDetails.image);
 
 
@@ -446,6 +478,7 @@ $('#myTable1').on('click', '.delete_btn', function(e) {
 
       var formdata = new FormData(editform);
       formdata.append("action", "product_update");
+      formdata.append("edit_status", document.getElementById("edit_status").checked ? 1 : 0);
       $.ajax({
         url: "category_data.php",
         type: "POST",
@@ -510,7 +543,7 @@ $('#myTable1').on('click', '.delete_btn', function(e) {
               $("#edit_type_error").text("");
             }
 
-            
+
             if (res.errors.edit_color) {
               $("#color_edit_error").text(res.errors.edit_color);
             } else {

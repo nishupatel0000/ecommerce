@@ -335,7 +335,26 @@ if ($_POST['action'] == "wishlist") {
         $user_id = $_SESSION['user_id'];
         $product_id = $_POST['product_id'];
 
+ $cart  = "select * from wishlist where user_id = '$user_id' and  product_id= '$product_id '";
 
+        $cart_result = mysqli_query($con_query, $cart);
+        $cart_data = mysqli_fetch_assoc($cart_result);
+
+        if ($output = mysqli_num_rows($cart_result) > 0) {
+            
+            if ($output) {
+             
+                $result = [
+                    "code" => 404,
+                    "msg" => "Already added to wishlist!",
+
+                ];
+                echo json_encode($result);
+                return false;
+            }
+            // Already in cart — no action
+        } 
+        else{
 
         $insert_wishlist = "insert into wishlist(user_id,product_id)values('$user_id','$product_id')";
         $result_wishlist = mysqli_query($con_query, $insert_wishlist);
@@ -354,17 +373,19 @@ if ($_POST['action'] == "wishlist") {
             return false;
         }
     }
-    // } else {
-    //     $query = "DELETE FROM wishlist WHERE user_id = $user_id AND product_id = $product_id";
-    //     if (mysqli_query($con_query, $query)) {
-    //         echo json_encode(['status' => 'removed']);
-    //     } else {
-    //         echo json_encode(['error' => 'Delete failed']);
-    //     }
-}
+    }
+} else if ($_POST['action'] == "remove") {
 
+    $user_id = $_SESSION['user_id'];
+    $product_id = $_POST['product_id'];
+    $query = "DELETE FROM wishlist WHERE user_id = $user_id AND product_id = $product_id";
+    if (mysqli_query($con_query, $query)) {
+        echo json_encode(['status' => 'removed']);
+    } else {
+        echo json_encode(['error' => 'Delete failed']);
+    }
+} else if ($_POST['action'] == "add_cart") {
 
-if ($_POST['action'] == "add_cart") {
 
     if (!isset($_SESSION['user_id'])) {
 
@@ -373,42 +394,34 @@ if ($_POST['action'] == "add_cart") {
             "err" => "user is not logged in"
         ];
         echo json_encode($err);
-        exit;
+        return false;
         //     // header("location:admin_info.php");
 
     }
 
+    else{
 
     $user_id = $_SESSION['user_id'];
     $product_id = $_POST['product_id'];
 
-    $query = "SELECT quantity FROM cart WHERE user_id = $user_id AND product_id = $product_id";
-    $result = mysqli_query($con_query, $query);
-    if (mysqli_num_rows($result) > 0) {
+        $cart  = "select * from cart where user_id = '$user_id' and  product_id= '$product_id '";
 
-        $row = mysqli_fetch_assoc($result);
-        $new_quantity = $row['quantity'] + 1;
-        $update_query = "UPDATE cart SET quantity = $new_quantity WHERE user_id = $user_id AND product_id = $product_id";
-        mysqli_query($con_query, $update_query);
-    } else {
-        // Insert new row
-
-        $cart  = "select * from cart where product_id= '$product_id'";
         $cart_result = mysqli_query($con_query, $cart);
         $cart_data = mysqli_fetch_assoc($cart_result);
 
-        if (mysqli_num_rows($cart_result) > 0) {
-            if ($check) {
+        if ($output = mysqli_num_rows($cart_result) > 0) {
+            
+            if ($output) {
+             
                 $result = [
                     "code" => 404,
                     "msg" => "Already added to cart!",
 
                 ];
-                 echo json_encode($check);
+                echo json_encode($result);
                 return false;
             }
             // Already in cart — no action
-            echo json_encode(['status' => '404', 'message' => 'Product already in cart']);
         } else {
             $insert_query = "INSERT INTO cart (user_id, product_id, quantity) VALUES ($user_id, $product_id, 1)";
             $insert_query =  mysqli_query($con_query, $insert_query);

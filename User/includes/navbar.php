@@ -1,7 +1,7 @@
   <?php
-    include_once '../common/config.php'; 
- ?>
- 
+    include_once '../common/config.php';
+    ?>
+
 
   <div class="container-fluid bg-dark mb-30">
       <div class="row px-xl-5">
@@ -74,16 +74,15 @@
                               <i class="fas fa-heart text-primary"></i>
 
                               <?php
-                              $wishlistCount = 0;
+                                $wishlistCount = 0;
                                 if (isset($_SESSION['user_id'])) {
-                                    
+
                                     $id = $_SESSION['user_id'];
                                     $category_select = "select count(id) as wishlist_id  from wishlist where user_id = '$id'";
                                     $result_select = mysqli_query($con_query, $category_select);
                                     $data = mysqli_fetch_assoc($result_select);
-                                 
                                 }
-                                
+
                                 ?>
 
 
@@ -92,9 +91,23 @@
                               </span>
                           </a>
 
-                          <a href="" class="btn px-0 ml-3">
+                          <a href="cart.php" class="btn px-0 ml-3">
                               <i class="fas fa-shopping-cart text-primary"></i>
-                              <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
+                              <?php
+                                $wishlistCount = 0;
+                                if (isset($_SESSION['user_id'])) {
+
+                                    $id = $_SESSION['user_id'];
+                                    $category_select = "select count(id) as cart_id  from cart where user_id = '$id'";
+                                    $result_select = mysqli_query($con_query, $category_select);
+                                    $data = mysqli_fetch_assoc($result_select);
+                                }
+
+                                ?>
+                              <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">
+                                  <?= isset($_SESSION['user_id']) ? $data['cart_id'] : 0 ?>
+
+                              </span>
                           </a>
                       </div>
                   </div>

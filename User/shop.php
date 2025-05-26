@@ -122,6 +122,7 @@ if (isset($_GET['category_id'])) {
 
                         $result_select = mysqli_query($con_query, $category_select);
                         $row = mysqli_num_rows($result_select);
+                      // display old  wishlist code  -- start 
 
                         $userWishlist = [];
                         if ($rows = mysqli_num_rows($result_select) > 0) {
@@ -130,7 +131,7 @@ if (isset($_GET['category_id'])) {
                                 if (isset($_SESSION['user_id'])) {
                                     $user_id = $_SESSION['user_id'];
                                     $products_id = $data['product_id'];
-                                    $select_wishlist = "select p.product_id from product as p join wishlist on p.wishlist_id = wishlist.id where wishlist.user_id = '$user_id'";
+                                    $select_wishlist = "select p.product_id from product as p join wishlist w on p.product_id = w.product_id where w.user_id = '$user_id'";
                                     $result_wishlist = mysqli_query($con_query, $select_wishlist);
                                     // if($rows=mysqli_num_rows($result_wishlist)){
                                     while ($row = mysqli_fetch_assoc($result_wishlist)) {
@@ -158,6 +159,7 @@ if (isset($_GET['category_id'])) {
                                                     ?>
                                                     <i class="fa-heart wishlist-icon <?php echo $isInWishlist ? 'fas text-danger' : 'far'; ?>" data-product-id="<?php echo $data['product_id']; ?>"></i>
                                                 </a>
+                                                <!--  end here old wishlist value  -->
                                                 <a class="btn btn-outline-dark btn-square" href="detail.php?id=<?php echo $data['product_id']; ?>"><i class="fa fa-search"></i></a>
                                             </div>
                                         </div>
@@ -214,12 +216,13 @@ if (isset($_GET['category_id'])) {
 <!-- Shop End -->
 <script>
     $(document).on("click", ".wishlist-icon", function() {
+        var $icon = $(this);
+        var product_id = $icon.data("product-id");
+        const isAdding = !$icon.hasClass('fas');
 
-        $(this).toggleClass('fas text-danger far');
+        // Toggle class after checking
+        $icon.toggleClass('fas text-danger far');
 
-        var product_id = $(this).data("product-id");
-        const isAdding = $(this).hasClass('fas');
-        // alert("Product ID: " + product_id);
         $.ajax({
             url: "get_filter_data.php",
             type: "POST",
@@ -227,22 +230,17 @@ if (isset($_GET['category_id'])) {
             data: {
                 action: isAdding ? "wishlist" : "remove",
                 product_id: product_id,
-
             },
             success: function(data) {
-
-                if (data.code == 200) {
-                    showWishlistMessage(data.msg);
-                } else if (data.code == 404) {
+                if (data.code == 200 || data.code == 404) {
                     showWishlistMessage(data.msg);
                 } else {
                     document.getElementById("authModal").style.display = "flex";
                 }
             }
-        })
-
-
+        });
     });
+
 
 
     function showWishlistMessage(msg = "Added to wishlist!") {
@@ -258,6 +256,7 @@ if (isset($_GET['category_id'])) {
 
     $(document).on("click", ".shopping-cart", function(e) {
         e.preventDefault();
+
         var productId = $(this).data('product-id');
         $.ajax({
             url: 'get_filter_data.php',
@@ -268,13 +267,11 @@ if (isset($_GET['category_id'])) {
                 product_id: productId
             },
             success: function(response) {
-                if (data.code == 200) {
-                    showWishlistMessage(data.msg);
-                } else if (data.satus == 404) {
-                    alert("hrllo");
-                    showWishlistMessage(data);
+                if (response.code == 200) {
+                    showWishlistMessage(response.msg);
                 } else {
-                    document.getElementById("authModal").style.display = "flex";
+                    // alert(response.code);
+                    showWishlistMessage(response.msg);
                 }
             }
         });

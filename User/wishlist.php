@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Products - Shop the Latest Fashion & Deals";
+$pageTitle = "Wishlist - Shop the Latest Fashion & Deals";
 include_once 'includes/header.php';
 include_once '../common/config.php';
 include_once 'includes/topbar.php';

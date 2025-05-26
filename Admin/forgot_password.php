@@ -105,3 +105,27 @@ session_unset();
 session_destroy();
 
 ?>
+  <?php 
+                         $select_check = "select * from product";
+                         $result_check = mysqli_query($con_query,$select_check);
+                         $data = mysqli_fetch_assoc($result_check);
+                         
+
+                    ?>
+                      <label class="toggleSwitch xlarge">
+                        <input
+                          type="checkbox"
+                          name="edit_status"
+                          
+                        >
+                        
+                        <span style="margin-left: 5px;">
+
+                        
+                          <span><?php  $isActive = ( $data['is_active'] == "0") ? "ON" : "" ; ?></span>  
+                          Status
+                        </span>
+                        <a></a>
+                      </label>
+                    
+                      

@@ -80,18 +80,29 @@
                     </div>
                     <div class="mb-3">
                       <label for="password_user" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="password_user" name="password_user" autocomplete="current-password"  placeholder="Enter Your Password">
+                      <input type="password" class="form-control" id="password_user" name="password_user" autocomplete="current-password" placeholder="Enter Your Password">
                       <div id="password_err" class="error"></div>
 
                     </div>
                     <div class="mb-3">
                       <label for="mobile_user" class="form-label">Mobile</label>
-                      <input type="text" class="form-control" id="mobile_user" name="mobileno_user" placeholder="918596785748">
+                      <input type="text" class="form-control" id="mobileno_user" name="mobileno_user" placeholder="918596785748">
                       <div id="mobileno_err" class="error"></div>
 
                     </div>
 
-
+                    <label class="toggleSwitch xlarge">
+                      <input
+                        type="checkbox"
+                        name="status"
+                        id="status">
+                      <span style="margin-left: 5px;">
+                        <span>OFF</span>
+                        <span>ON</span>
+                        staus
+                      </span>
+                      <a></a>
+                    </label>
 
                   </div>
                   <div class="modal-footer">
@@ -178,7 +189,7 @@
                     <input type="hidden" name="id" id="myid">
                     <div class="mb-3">
                       <label for="name" class="form-label">Name</label>
-                      <input type="text" class="form-control" id="e_name" name="name"  placeholder="Enter Your Name">
+                      <input type="text" class="form-control" id="e_name" name="name" placeholder="Enter Your Name">
                       <div id="name_er" class="error"></div>
                     </div>
                     <div class="mb-3">
@@ -188,17 +199,29 @@
                     </div>
                     <div class="mb-3">
                       <label for="email" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="email" name="email"   placeholder="Enter Your Email" >
+                      <input type="email" class="form-control" id="email" name="email" placeholder="Enter Your Email">
                       <div id="email_er" class="error"></div>
 
                     </div>
                     <div class="mb-3">
                       <label for="mobile" class="form-label">Mobile</label>
-                      <input type="text" class="form-control" id="mobile" name="mobileno"   placeholder="Enter Your Mobile Number">
+                      <input type="text" class="form-control" id="edit_mobile" name="edit_mobile" placeholder="Enter Your Mobile Number">
                       <div id="mobile_er" class="error"></div>
 
                     </div>
 
+                    <label class="toggleSwitch xlarge">
+                      <input
+                        type="checkbox"
+                        name="edit_status"
+                        id="edit_status">
+                      <span style="margin-left: 5px;">
+                        <span>OFF</span>
+                        <span>ON</span>
+                        staus
+                      </span>
+                      <a></a>
+                    </label>
                   </div>
                   <div class="modal-footer">
                     <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
@@ -212,7 +235,7 @@
       </div>
     </div>
   </div>
-  
+
   <script>
     $(document).ready(function() {
       $(document).on("click", ".edit", function() {
@@ -227,14 +250,17 @@
           success: function(response) {
 
             var userDetails = JSON.parse(response);
+            console.log(userDetails);
             $("#myid").val(userDetails.id);
 
             $("#e_name").val(userDetails.name);
             $("#e_username").val(userDetails.username);
             $("#email").val(userDetails.email);
-            $("#mobile").val(userDetails.mobileno);
+            $("#edit_mobile").val(userDetails.mobile);
             $("#vehicle_no").val(userDetails.vehicle_no);
             $("#vehicle_type").val(userDetails.vehicle_type);
+          $("#edit_status").prop("checked", userDetails.status == 1);
+
           },
           error: function() {
             alert("Error fetching user details.");
@@ -244,11 +270,13 @@
 
       $(document).on("click", ".view", function() {
         var userId = $(this).data("id");
-          $("#spinner").show();
+        // $("#spinner").show();
+
         $.ajax({
-          url: 'fetch_user_details.php',
+          url: 'add_user.php',
           type: 'POST',
           data: {
+            action: "user_data",
             id: userId
           },
           success: function(response) {
@@ -259,7 +287,7 @@
             $("#modal-user-mobile").text(userDetails.mobileno);
             $("#modal-user-vehicle_no").text(userDetails.vehicle_no);
             $("#modal-user-vehicle_type").text(userDetails.vehicle_type);
-           },
+          },
 
           error: function() {
             alert("Error fetching user details.");
@@ -384,6 +412,8 @@
         var form = document.getElementById('add_user');
         var formData = new FormData(form);
         formData.append("action", "user_insert");
+        formData.append("status", document.getElementById("status").checked ? 1 : 0);
+
         $.ajax({
           url: "add_user.php",
           type: "POST",
@@ -460,6 +490,8 @@
 
       var formdata = new FormData(editform);
       formdata.append("action", "update_user");
+      formdata.append("edit_status", document.getElementById("edit_status").checked ? 1 : 0);
+
       $.ajax({
         url: "add_user.php",
         type: "POST",
