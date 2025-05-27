@@ -131,7 +131,7 @@ if (isset($_GET['category_id'])) {
                                 if (isset($_SESSION['user_id'])) {
                                     $user_id = $_SESSION['user_id'];
                                     $products_id = $data['product_id'];
-                                    $select_wishlist = "select p.product_id from product as p join wishlist w on p.product_id = w.product_id where w.user_id = '$user_id'";
+                                    $select_wishlist = "select p.product_id,p.price,p.discount_price from product as p join wishlist w on p.product_id = w.product_id where w.user_id = '$user_id'";
                                     $result_wishlist = mysqli_query($con_query, $select_wishlist);
                                     // if($rows=mysqli_num_rows($result_wishlist)){
                                     while ($row = mysqli_fetch_assoc($result_wishlist)) {
@@ -150,14 +150,14 @@ if (isset($_GET['category_id'])) {
                                             <div id="wishlistToast" class="custom-toast"></div>
                                             <img class="img-fluid w-100" style="max-height: 280px; object-fit: cover;" src="../Admin/assets/img/product/<?php echo $data['image']; ?>" alt="">
                                             <div class="product-action">
-                                                <a class="btn btn-outline-dark btn-square" href="javascript:void(0)"><i class="fa fa-shopping-cart shopping-cart" data-product-id="<?php echo $data['product_id']; ?>"></i></a>
+                                                <a class="btn btn-outline-dark btn-square" href="javascript:void(0)"><i class="fa fa-shopping-cart shopping-cart" data-product-id="<?php echo $data['product_id']; ?>"  data-price-id="<?php echo $data['price']; ?>"  data-discount-price="<?php echo $data['discount_price']; ?>"></i></a>
                                                 <a class="btn btn-outline-dark btn-square" href="javascript:void(0)">
                                                     <?php
                                                     $isInWishlist = in_array($data['product_id'], $userWishlist);
 
 
                                                     ?>
-                                                    <i class="fa-heart wishlist-icon <?php echo $isInWishlist ? 'fas text-danger' : 'far'; ?>" data-product-id="<?php echo $data['product_id']; ?>"></i>
+                                                    <i class="fa-heart wishlist-icon <?php echo $isInWishlist ? 'fas text-danger' : 'far'; ?>" data-product-id="<?php echo $data['product_id']; ?>" data-price="<?php echo $data['price']; ?>"></i>
                                                 </a>
                                                 <!--  end here old wishlist value  -->
                                                 <a class="btn btn-outline-dark btn-square" href="detail.php?id=<?php echo $data['product_id']; ?>"><i class="fa fa-search"></i></a>
@@ -233,6 +233,7 @@ if (isset($_GET['category_id'])) {
             },
             success: function(data) {
                 if (data.code == 200 || data.code == 404) {
+              
                     showWishlistMessage(data.msg);
                 } else {
                     document.getElementById("authModal").style.display = "flex";
@@ -258,13 +259,19 @@ if (isset($_GET['category_id'])) {
         e.preventDefault();
 
         var productId = $(this).data('product-id');
+        var priceId = $(this).data('price-id');
+        var discount_price = $(this).data('discount-price');
+
+
         $.ajax({
             url: 'get_filter_data.php',
             type: 'POST',
             dataType: "JSON",
             data: {
                 action: "add_cart",
-                product_id: productId
+                product_id: productId,
+                price_id:priceId,
+                discount_price:discount_price
             },
             success: function(response) {
                 if (response.code == 200) {

@@ -123,8 +123,7 @@ $data = mysqli_fetch_assoc($result_data);
 
   </div>
 </div>
-
-
+ 
  
 <script>
   $(".delete").click(function(e) {
