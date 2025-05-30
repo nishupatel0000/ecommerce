@@ -31,7 +31,7 @@ $shipping = 0;
         <?php
         if (isset($_SESSION['user_id'])) {
             $id = $_SESSION['user_id'];
-            $category_select = "SELECT p.*,c.* FROM product as p join  cart as c on p.product_id = c.product_id  WHERE c.user_id = '$id'";
+            $category_select = "SELECT  p.*,c.* FROM product as p join  cart as c on p.product_id = c.product_id  WHERE c.user_id = '$id'";
 
             // $category_select = "SELECT * FROM  cart  WHERE cart.user_id = '$id'";
 

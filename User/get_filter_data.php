@@ -264,6 +264,7 @@ if ($_POST['action'] == "user_login") {
     if (empty($_POST['password'])) {
         $error['password'] = "* password is required";
     } else {
+
         $password = md5($_POST['password']);
     }
 
@@ -559,166 +560,201 @@ if ($_POST['action'] == "billing_insert") {
         //     // header("location:admin_info.php");
 
     } else {
-
         $user_id = $_SESSION['user_id'];
         $created_at = date('Y-m-d H:i:s');
-        $billing_type = 'billing';
-        $shipping_type = 'shipping';
- $ship_to_different = isset($_POST['ship_to_different']) ? $_POST['ship_to_different'] : '0';
 
-        // Billing Fields
-        if (empty($_POST['first_name'])) {
-            $error['first_name'] = ' * First name is required';
-        } else {
-            $first_name = $_POST['first_name'];
-        }
+        // Check if the user already has a billing address
+        $check_query = "SELECT COUNT(*) AS has_billing, id FROM addresses WHERE user_id = '$user_id' AND billing_address_line1 IS NOT NULL";
+        $check_result = mysqli_query($con_query, $check_query);
+        $row = mysqli_fetch_assoc($check_result);
+        $has_billing = $row['has_billing'] > 0;
 
-        if (empty($_POST['last_name'])) {
-            $error['last_name'] = ' * Last name is required';
-        } else {
-            $last_name = $_POST['last_name'];
-        }
+        // If no billing address exists, validate billing fields
+        $error = [];
 
-        if (empty($_POST['billing_email'])) {
-            $error['billing_email'] = ' * Email is required';
-        } else {
-            $email = $_POST['billing_email'];
-        }
+        // Step 1: Check if user has billing address
+        if (!$has_billing) {
 
-        if (empty($_POST['mobile'])) {
-            $error['mobile'] = ' * Mobile number is required';
-        } else {
-            $mobile = $_POST['mobile'];
-        }
-
-        if (empty($_POST['address1'])) {
-            $error['address1'] = ' * Address Line 1 is required';
-        } else {
-            $address1 = $_POST['address1'];
-        }
-
-        if (empty($_POST['address2'])) {
-            $error['address2'] = ' * Address Line 2 is required';
-        } else {
-            $address2 = $_POST['address2'];
-        }
-
-        if (empty($_POST['country'])) {
-            $error['country'] = ' * Country is required';
-        } else {
-            $country = $_POST['country'];
-        }
-
-        if (empty($_POST['city'])) {
-            $error['city'] = ' * City is required';
-        } else {
-            $city = $_POST['city'];
-        }
-
-        if (empty($_POST['state'])) {
-            $error['state'] = ' * State is required';
-        } else {
-            $state = $_POST['state'];
-        }
-
-        if (empty($_POST['zip'])) {
-            $error['zip'] = ' * ZIP code is required';
-        } else {
-            $zip = $_POST['zip'];
-        }
-
-        if (!empty($error)) {
-            $allerror = ['errors' => $error];
-            echo json_encode($allerror);
-            return false;
-        }
-
-        // Insert Billing Address
-        $insert_billing = "INSERT INTO addresses (user_id, type, first_name, last_name, email, mobile_no, address_line1, address_line2, country, city, state, zip_code, created_at)
-        VALUES ('$user_id', '$billing_type', '$first_name', '$last_name', '$email', '$mobile', '$address1', '$address2', '$country', '$city', '$state', '$zip', '$created_at')";
-
-        $result_billing = mysqli_query($con_query, $insert_billing);
-
-        // Only if checkbox is checked: insert shipping address
-        if ($ship_to_different == '1') {
-
-            if (empty($_POST['shipping_first_name'])) {
-                $error['shipping_first_name'] = ' * First name is required';
+            // Validate billing address (Required for first-time users)
+            if (empty($_POST['address1'])) {
+                $error['address1'] = '* Billing Address Line 1 is required';
             } else {
-                $shipping_first_name = $_POST['shipping_first_name'];
+                $billing_address1 = $_POST['address1'];
             }
 
-            if (empty($_POST['shipping_last_name'])) {
-                $error['shipping_last_name'] = ' * Last name is required';
+            if (empty($_POST['address2'])) {
+                $error['address2'] = '* Billing Address Line 2 is required';
             } else {
-                $shipping_last_name = $_POST['shipping_last_name'];
+                $billing_address2 = $_POST['address2'];
             }
 
-            if (empty($_POST['shipping_email'])) {
-                $error['shipping_email'] = ' * Email is required';
+            if (empty($_POST['country'])) {
+                $error['country'] = '* Country is required';
             } else {
-                $shipping_email = $_POST['shipping_email'];
+                $billing_country = $_POST['country'];
             }
 
-            if (empty($_POST['shipping_mobile'])) {
-                $error['shipping_mobile'] = ' * Mobile number is required';
+            if (empty($_POST['city'])) {
+                $error['city'] = '* City is required';
             } else {
-                $shipping_mobile = $_POST['shipping_mobile'];
+                $billing_city = $_POST['city'];
             }
 
+            if (empty($_POST['state'])) {
+                $error['state'] = '* State is required';
+            } else {
+                $billing_state = $_POST['state'];
+            }
+
+            if (empty($_POST['zip'])) {
+                $error['zip'] = '* ZIP Code is required';
+            } else {
+                $billing_zip = $_POST['zip'];
+            }
+
+            if (!empty($error)) {
+                $allerror = [
+                    "status" => 403,
+                    'errors' => $error
+
+                ];
+                echo json_encode($allerror);
+                return false;
+            } else {
+                // Insert full billing & optional shipping address
+                $insert = "INSERT INTO addresses (
+        user_id,
+        billing_address_line1, billing_address_line2, billing_country, billing_city, billing_state, billing_zip_code) VALUES (
+        '$user_id',
+        '$billing_address1', '$billing_address2', '$billing_country', '$billing_city', '$billing_state', '$billing_zip')";
+
+                if (mysqli_query($con_query, $insert)) {
+                    echo json_encode(['status' => 200, 'msg' => 'Address saved successfully']);
+                    return true;
+                } else {
+                    echo json_encode(['status' => 500, 'msg' => 'Insert failed: ' . mysqli_error($con_query)]);
+                    return false;
+                }
+            }
+        }
+
+        // Step 2: Validate shipping only if "Ship to different address" is checked
+        $shipping_address1 = $shipping_address2 = $shipping_country = $shipping_city = $shipping_state = $shipping_zip = null;
+
+        if (isset($_POST['shipto'])) {
             if (empty($_POST['shipping_address1'])) {
-                $error['shipping_address1'] = ' * Address Line 1 is required';
+                $error['shipping_address1'] = '* Shipping Address Line 1 is required';
             } else {
                 $shipping_address1 = $_POST['shipping_address1'];
             }
 
             if (empty($_POST['shipping_address2'])) {
-                $error['shipping_address2'] = ' * Address Line 2 is required';
+                $error['shipping_address2'] = '* Shipping Address Line 2 is required';
             } else {
                 $shipping_address2 = $_POST['shipping_address2'];
             }
 
             if (empty($_POST['shipping_country'])) {
-                $error['shipping_country'] = ' * Country is required';
+                $error['shipping_country'] = '* Country is required';
             } else {
                 $shipping_country = $_POST['shipping_country'];
             }
 
             if (empty($_POST['shipping_city'])) {
-                $error['shipping_city'] = ' * City is required';
+                $error['shipping_city'] = '* City is required';
             } else {
                 $shipping_city = $_POST['shipping_city'];
             }
 
             if (empty($_POST['shipping_state'])) {
-                $error['shipping_state'] = ' * State is required';
+                $error['shipping_state'] = '* State is required';
             } else {
                 $shipping_state = $_POST['shipping_state'];
             }
 
             if (empty($_POST['shipping_zip'])) {
-                $error['shipping_zip'] = ' * ZIP code is required';
+                $error['shipping_zip'] = '* Zip Code is required';
             } else {
                 $shipping_zip = $_POST['shipping_zip'];
             }
-
-            if (!empty($error)) {
-                $allerror = ['errors' => $error];
-                echo json_encode($allerror);
-                return false;
-            }
-
-            $insert_shipping = "INSERT INTO addresses (user_id, type, first_name, last_name, email, mobile_no, address_line1, address_line2, country, city, state, zip_code, created_at)
-            VALUES ('$user_id', '$shipping_type', '$shipping_first_name', '$shipping_last_name', '$shipping_email', '$shipping_mobile', '$shipping_address1', '$shipping_address2', '$shipping_country', '$shipping_city', '$shipping_state', '$shipping_zip', '$created_at')";
-
-            mysqli_query($con_query, $insert_shipping);
         }
 
-        $data = [
-            "status" => 200,
-            "msg" => "Address saved successfully"
-        ];
-        echo json_encode($data);
-        return false;
+
+        if (!empty($error)) {
+            $allerror = [
+                "status" => 404,
+                'errors' => $error
+
+            ];
+            echo json_encode($allerror);
+            return false;
+        }
+
+
+        if (!$has_billing) {
+            // Insert full billing & optional shipping address
+            $insert = "INSERT INTO addresses (
+        user_id,
+        billing_address_line1, billing_address_line2, billing_country, billing_city, billing_state, billing_zip_code) VALUES (
+        '$user_id',
+        '$billing_address1', '$billing_address2', '$billing_country', '$billing_city', '$billing_state', '$billing_zip')";
+
+            if (mysqli_query($con_query, $insert)) {
+                echo json_encode(['status' => 200, 'msg' => 'Address saved successfully']);
+            } else {
+                echo json_encode(['status' => 500, 'msg' => 'Insert failed: ' . mysqli_error($con_query)]);
+            }
+        } elseif ($shipping_address1) {
+            // Update shipping only if user has billing and opted to provide shipping
+            $address_id = $row['id'];
+            $update = "UPDATE addresses SET
+        shipping_address_line1 = '$shipping_address1',
+        shipping_address_line2 = '$shipping_address2',
+        shipping_country = '$shipping_country',
+        shipping_city = '$shipping_city',
+        shipping_state = '$shipping_state',
+        shipping_zip_code = '$shipping_zip'
+        WHERE id = '$address_id'";
+
+            if (mysqli_query($con_query, $update)) {
+                echo json_encode(['status' => 200, 'msg' => 'Shipping address updated']);
+            } else {
+                echo json_encode(['status' => 500, 'msg' => 'Update failed: ' . mysqli_error($con_query)]);
+            }
+        } else {
+            // No shipping and billing already exists — nothing to do
+            echo json_encode(['status' => 200, 'msg' => 'Billing address already exists, nothing to save']);
+        }
+    }
+    $total_payable = $_POST['total_payable'];
+    $discount = $_POST['discount'];
+    $total_order = $_POST['total_order'];
+
+
+    foreach ($total_order as $total_orders) {
+
+
+
+        $order_query = "insert into orders (user_id,discount,total_order,total_payable)values('$user_id','$discount','$total_orders','$total_payable')";
+        $result_order = mysqli_query($con_query, $order_query);
+        $last_id = mysqli_insert_id($con_query);
+    }
+    if ($last_id) {
+
+        $order_id = $last_id;
+        $product_name = $_POST['product_name'];
+        $quantity = $_POST['quantity'];
+        $price = $_POST['price'];
+
+        foreach ($product_name as $index => $name) {
+            $qty = $quantity[$index];
+            $unit_price = $price[$index];
+            $total_price = $qty * $unit_price;
+
+            $sql = "INSERT INTO order_item (order_id, product_name, Qty, price, total_price) 
+                VALUES ('$order_id', '$name', '$qty', '$unit_price', '$total_price')";
+
+            mysqli_query($con_query, $sql);
+        }
     }
 }
